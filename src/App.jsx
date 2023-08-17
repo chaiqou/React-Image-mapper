@@ -93,6 +93,15 @@ const App = () => {
     );
   };
 
+  const onClickOutsideImageZoneEventHandler = (event) => {
+    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
+    setDisplayMessage(
+      `You clicked on the image outside zone at coords ${JSON.stringify(
+        coords
+      )} !`
+    );
+  };
+
   return (
     <div className="image-mapper-container">
       <ImageMapper
@@ -103,6 +112,7 @@ const App = () => {
         onMouseMove={onMouseMoveEventHandler}
         onMouseEnter={onMouseEnterEventHandler}
         onMouseLeave={onMouseLeaveEventHandler}
+        onImageClick={onClickOutsideImageZoneEventHandler}
       />
 
       <h1>{displayMessage ? displayMessage : null}</h1>
