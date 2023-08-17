@@ -130,6 +130,8 @@ const App = () => {
         onMouseLeave={onMouseLeaveEventHandler}
         onImageClick={onClickOutsideImageZoneEventHandler}
         onImageMouseMove={onImageMouseMoveEventHandler}
+        responsive="true"
+        parentWidth={920}
       />
 
       <h1>{displayMessage ? displayMessage : null}</h1>
