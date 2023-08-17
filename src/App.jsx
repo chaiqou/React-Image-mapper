@@ -12,7 +12,7 @@ const App = () => {
       {
         name: "First floor",
         shape: "poly", // ფორმა (rect,poly,circ)
-        coords: [46, 357, 928, 402, 928, 473, 47, 409], // ფორმის კოორდინატები
+        coords: [46, 357, 928, 402, 928, 473, 47, 409], // ფორმის კოორდინატები [x1, y1, x2, y1, x2, y2, x1, y2]
         fillColor: "rgba(229, 0, 0, 0.3)", // რა ფერი გახდება ჰოვერზე
         strokeColor: "rgba(0, 0, 0, 0, 0)", // ბორდერის ფერი
         lineWidth: 0, // ბორდერის სისქე
@@ -132,6 +132,7 @@ const App = () => {
         onImageMouseMove={onImageMouseMoveEventHandler}
         responsive="true"
         parentWidth={920}
+        natural
       />
 
       <h1>{displayMessage ? displayMessage : null}</h1>
