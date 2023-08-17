@@ -55,14 +55,40 @@ const App = () => {
 
   const onClickEventHandler = (object) => {
     setDisplayMessage(
-      `You clicked on ${object.shape} at coords ${JSON.stringify(
+      `You clicked on ${object.shape} at coordinant ${JSON.stringify(
         object.coords
       )}`
     );
   };
 
-  const onImageLoad = () => {
+  const onImageLoadEventHandler = () => {
     setDisplayMessage("Load first!");
+  };
+
+  const onMouseMoveEventHandler = (object, _, event) => {
+    console.log(event);
+    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
+    setCoordinatesMessage(
+      `You moved on the image at coordinant ${JSON.stringify(coords)} !`
+    );
+  };
+
+  const onMouseEnterEventHandler = (object) => {
+    setHoveredArea(object);
+    setCoordinatesMessage(
+      `You entered ${object.shape} ${
+        object.name
+      } at coordinant ${JSON.stringify(object.coords)} !`
+    );
+  };
+
+  const onMouseLeaveEventHandler = (object) => {
+    setHoveredArea(null);
+    setCoordinatesMessage(
+      `You leaved ${object.shape} ${object.name} at coordinant ${JSON.stringify(
+        object.coords
+      )} !`
+    );
   };
 
   return (
@@ -71,7 +97,10 @@ const App = () => {
         src="/src/assets/apartment.png"
         map={imageMapperProps}
         onClick={onClickEventHandler}
-        onLoad={onImageLoad}
+        onLoad={onImageLoadEventHandler}
+        onMouseMove={onMouseMoveEventHandler}
+        onMouseEnter={onMouseEnterEventHandler}
+        onMouseLeave={onMouseLeaveEventHandler}
       />
 
       <h1>{displayMessage ? displayMessage : null}</h1>
