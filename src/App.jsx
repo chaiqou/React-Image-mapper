@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import ImageMapper from "react-img-mapper";
+import "./app.css";
 
 const App = () => {
   const [displayMessage, setDisplayMessage] = useState("");
-  const [movementMessage, setMovementMessage] = useState("");
+  const [coordinatesMessage, setCoordinatesMessage] = useState("");
   const [hoveredArea, setHoveredArea] = useState(null);
 
   const imageMapperProps = {
@@ -46,7 +47,7 @@ const App = () => {
         fillColor: "rgba(229, 0, 0, 0.3)",
         strokeColor: "rgba(0, 0, 0, 0, 0)",
         lineWidth: 0,
-        preFillColor: "#5da0d02e",
+        preFillColor: "rgba(93, 160, 208, 0.5)",
         center: [30, 35, 35, 53],
       },
     ],
@@ -65,7 +66,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <div className="image-mapper-container">
       <ImageMapper
         src="/src/assets/apartment.png"
         map={imageMapperProps}
@@ -73,13 +74,9 @@ const App = () => {
         onLoad={onImageLoad}
       />
 
-      <h1 style={{ color: "white", fontSize: "32px", marginLeft: "400px" }}>
-        {displayMessage ? displayMessage : null}
-      </h1>
-      <h2 style={{ color: "orange", fontSize: "16px", marginLeft: "400px" }}>
-        {movementMessage ? movementMessage : null}
-      </h2>
-    </>
+      <h1>{displayMessage ? displayMessage : null}</h1>
+      <h2>{coordinatesMessage ? coordinatesMessage : null}</h2>
+    </div>
   );
 };
 
