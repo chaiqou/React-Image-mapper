@@ -5,7 +5,6 @@ import "./app.css";
 const App = () => {
   const [displayMessage, setDisplayMessage] = useState("");
   const [coordinatesMessage, setCoordinatesMessage] = useState("");
-  const [hoveredArea, setHoveredArea] = useState(null);
 
   const imageMapperProps = {
     name: "Redberry",
@@ -53,11 +52,9 @@ const App = () => {
     ],
   };
 
-  const onClickEventHandler = (object) => {
+  const onClickEventHandler = (area) => {
     setDisplayMessage(
-      `You clicked on ${object.shape} at coordinant ${JSON.stringify(
-        object.coords
-      )}`
+      `You clicked on ${area.name} at coordinant ${JSON.stringify(area.coords)}`
     );
   };
 
@@ -65,28 +62,33 @@ const App = () => {
     setDisplayMessage("Load first!");
   };
 
-  const onMouseMoveEventHandler = (object, _, event) => {
-    console.log(event);
+  const onMouseMoveEventHandler = (area, _, event) => {
     const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
     setCoordinatesMessage(
-      `You moved on the image at coordinant ${JSON.stringify(coords)} !`
+      "You moved on " +
+        area.shape +
+        " " +
+        area.name +
+        ' at coords {"x":' +
+        coords.x +
+        ',"y":' +
+        coords.y +
+        "} !"
     );
   };
 
-  const onMouseEnterEventHandler = (object) => {
-    setHoveredArea(object);
+  const onMouseEnterEventHandler = (area) => {
     setCoordinatesMessage(
-      `You entered ${object.shape} ${
-        object.name
-      } at coordinant ${JSON.stringify(object.coords)} !`
+      `You entered ${area.shape} ${area.name} at coordinant ${JSON.stringify(
+        area.coords
+      )} !`
     );
   };
 
-  const onMouseLeaveEventHandler = (object) => {
-    setHoveredArea(null);
+  const onMouseLeaveEventHandler = (area) => {
     setCoordinatesMessage(
-      `You leaved ${object.shape} ${object.name} at coordinant ${JSON.stringify(
-        object.coords
+      `You leaved ${area.shape} ${area.name} at coordinant ${JSON.stringify(
+        area.coords
       )} !`
     );
   };
