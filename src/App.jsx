@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import ImageMapper from "react-img-mapper";
 
 const App = () => {
+  const [displayMessage, setDisplayMessage] = useState("");
+  const [movementMessage, setMovementMessage] = useState("");
+  const [hoveredArea, setHoveredArea] = useState(null);
+
   const imageMapperProps = {
     name: "Redberry",
     areas: [
@@ -49,21 +53,33 @@ const App = () => {
   };
 
   const onClickEventHandler = (object) => {
-    console.log(object);
-    console.log(
+    setDisplayMessage(
       `You clicked on ${object.shape} at coords ${JSON.stringify(
         object.coords
       )}`
     );
   };
 
+  const onImageLoad = () => {
+    setDisplayMessage("Load first!");
+  };
+
   return (
-    <ImageMapper
-      onLoad={() => console.log("load first")}
-      src="/src/assets/apartment.png"
-      map={imageMapperProps}
-      onClick={onClickEventHandler}
-    />
+    <>
+      <ImageMapper
+        src="/src/assets/apartment.png"
+        map={imageMapperProps}
+        onClick={onClickEventHandler}
+        onLoad={onImageLoad}
+      />
+
+      <h1 style={{ color: "white", fontSize: "32px", marginLeft: "400px" }}>
+        {displayMessage ? displayMessage : null}
+      </h1>
+      <h2 style={{ color: "orange", fontSize: "16px", marginLeft: "400px" }}>
+        {movementMessage ? movementMessage : null}
+      </h2>
+    </>
   );
 };
 
