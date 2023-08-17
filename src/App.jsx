@@ -59,6 +59,7 @@ const App = () => {
 
   return (
     <ImageMapper
+      onLoad={() => console.log("load first")}
       src="/src/assets/apartment.png"
       map={imageMapperProps}
       onClick={onClickEventHandler}
