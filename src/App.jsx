@@ -1,10 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
 
 const App = () => {
   const [displayMessage, setDisplayMessage] = useState("");
   const [coordinatesMessage, setCoordinatesMessage] = useState("");
+  const canvasRef = useRef(null);
+  const [shape, setShape] = useState(null);
+  const [coordinates, setCoordinates] = useState([]);
+
+  const startDrawing = (e) => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    setShape({ type: "rectangle", x, y, width: 0, height: 0 });
+  };
+
+  const drawShape = (e) => {
+    if (!shape) return;
+
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    const rect = canvas.getBoundingClientRect();
+    const width = e.clientX - rect.left - shape.x;
+    const height = e.clientY - rect.top - shape.y;
+
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.strokeRect(shape.x, shape.y, width, height);
+  };
+
+  const endDrawing = () => {
+    if (shape) {
+      console.log(coordinates);
+      setCoordinates([...coordinates, shape]);
+      setShape(null);
+    }
+  };
 
   const imageMapperProps = {
     name: "Redberry",
@@ -133,6 +167,15 @@ const App = () => {
         responsive="true"
         parentWidth={920}
         natural
+      />
+
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        onMouseDown={startDrawing}
+        onMouseMove={drawShape}
+        onMouseUp={endDrawing}
       />
 
       <h1>{displayMessage ? displayMessage : null}</h1>
