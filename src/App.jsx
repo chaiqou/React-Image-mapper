@@ -13,9 +13,23 @@ const App = () => {
     width: 0,
     height: 0,
   });
+  const [areas, setAreas] = useState([]);
 
-  const handleImageLoad = (image) => {
-    setImageDimensions({ width: image.width, height: image.height });
+  const imageMapperProps = {
+    name: "Redberry",
+    areas: [
+      {
+        name: "First floor",
+        shape: "poly", // (rect,poly,circ)
+        coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
+        fillColor: "rgba(229, 0, 0, 0.3)",
+        strokeColor: "rgba(0, 0, 0, 0, 0)",
+        lineWidth: 0,
+        preFillColor: "#5da0d02e",
+        center: [30, 35, 35, 53],
+      },
+      ...areas,
+    ],
   };
 
   const canvasClick = (e) => {
@@ -25,17 +39,34 @@ const App = () => {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      // Check if the clicked point is within the valid drawing area based on image dimensions
-      if (
-        x >= 0 &&
-        x <= imageDimensions.width &&
-        y >= 0 &&
-        y <= imageDimensions.height
-      ) {
-        setPolygonPoints([...polygonPoints, { x, y }]);
-        drawPolygonOnCanvas([...polygonPoints, { x, y }]);
-      }
+      setPolygonPoints([...polygonPoints, { x, y }]);
+      drawPolygonOnCanvas([...polygonPoints, { x, y }]);
     }
+  };
+
+  const stopDrawing = () => {
+    if (polygonPoints.length > 2) {
+      const newPolygon = {
+        name: `Polygon ${areas.length + 1}`,
+        shape: "poly",
+        coords: polygonPoints.flatMap((point) => [point.x, point.y]),
+        fillColor: "rgba(229, 0, 0, 0.3)",
+        strokeColor: "rgba(0, 0, 0, 0, 0)",
+        lineWidth: 0,
+        preFillColor: "#5da0d02e",
+        center: [30, 35, 35, 53],
+      };
+
+      console.log(newPolygon);
+      setAreas([...areas, newPolygon]);
+    }
+
+    setDrawingPolygon(false);
+    setPolygonPoints([]);
+  };
+
+  const handleImageLoad = (image) => {
+    setImageDimensions({ width: image.width, height: image.height });
   };
 
   const drawPolygonOnCanvas = (points) => {
@@ -52,29 +83,6 @@ const App = () => {
     }
     context.closePath();
     context.stroke();
-  };
-
-  const togglePolygonDrawing = () => {
-    if (drawingPolygon) {
-      setPolygonPoints([]);
-    }
-    setDrawingPolygon(!drawingPolygon);
-  };
-
-  const imageMapperProps = {
-    name: "Redberry",
-    areas: [
-      {
-        name: "First floor",
-        shape: "poly", // (rect,poly,circ)
-        coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
-        fillColor: "rgba(229, 0, 0, 0.3)",
-        strokeColor: "rgba(0, 0, 0, 0, 0)",
-        lineWidth: 0,
-        preFillColor: "#5da0d02e",
-        center: [30, 35, 35, 53],
-      },
-    ],
   };
 
   // 	Click on a zone in image
@@ -164,15 +172,16 @@ const App = () => {
         <canvas
           ref={canvasRef}
           className="canvas"
-          width={800}
-          height={600}
+          width={imageDimensions.width}
+          height={imageDimensions.height}
           onMouseDown={(e) => canvasClick(e)}
         />
       ) : null}
 
-      <button onClick={togglePolygonDrawing}>
-        {drawingPolygon ? "Finish Drawing Polygon" : "Start Drawing Polygon"}
+      <button onClick={() => setDrawingPolygon(true)}>
+        Start Drawing Polygon
       </button>
+      <button onClick={stopDrawing}>Stop Drawing</button>
 
       <h1>{displayMessage ? displayMessage : null}</h1>
       <h2>{coordinatesMessage ? coordinatesMessage : null}</h2>
