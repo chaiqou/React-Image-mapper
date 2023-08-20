@@ -9,6 +9,17 @@ const App = () => {
   const [shape, setShape] = useState(null);
   const [coordinates, setCoordinates] = useState([]);
 
+  const drawShapeOnCanvas = () => {
+    if (!shape) return;
+
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    const { x, y, width, height } = shape;
+    context.strokeRect(x, y, width, height);
+  };
+
   const startDrawing = (e) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
@@ -23,34 +34,34 @@ const App = () => {
     if (!shape) return;
 
     const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
     const rect = canvas.getBoundingClientRect();
     const width = e.clientX - rect.left - shape.x;
     const height = e.clientY - rect.top - shape.y;
 
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.strokeRect(shape.x, shape.y, width, height);
+    setShape((prevShape) => ({ ...prevShape, width, height }));
+    console.log(shape);
+    drawShapeOnCanvas();
   };
 
   const endDrawing = () => {
     if (shape) {
-      console.log(coordinates);
-      setCoordinates([...coordinates, shape]);
+      const updatedCoordinates = [...coordinates, shape];
+      setCoordinates(updatedCoordinates);
       setShape(null);
+      drawShapeOnCanvas(); // Clear the canvas after drawing
     }
   };
-
   const imageMapperProps = {
     name: "Redberry",
     areas: [
       {
         name: "First floor",
-        shape: "poly", // ფორმა (rect,poly,circ)
-        coords: [46, 357, 928, 402, 928, 473, 47, 409], // ფორმის კოორდინატები [x1, y1, x2, y1, x2, y2, x1, y2]
-        fillColor: "rgba(229, 0, 0, 0.3)", // რა ფერი გახდება ჰოვერზე
-        strokeColor: "rgba(0, 0, 0, 0, 0)", // ბორდერის ფერი
-        lineWidth: 0, // ბორდერის სისქე
-        preFillColor: "#5da0d02e", // ჰოვერამდე ფერის მინიჭება
+        shape: "poly", // (rect,poly,circ)
+        coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
+        fillColor: "rgba(229, 0, 0, 0.3)",
+        strokeColor: "rgba(0, 0, 0, 0, 0)",
+        lineWidth: 0,
+        preFillColor: "#5da0d02e",
         center: [30, 35, 35, 53],
       },
       {
@@ -171,6 +182,7 @@ const App = () => {
 
       <canvas
         ref={canvasRef}
+        className="canvas"
         width={800}
         height={600}
         onMouseDown={startDrawing}

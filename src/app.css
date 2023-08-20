@@ -6,3 +6,10 @@
   position: relative;
   user-select: text;
 }
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2; /* Make sure the canvas is above the image */
+}
