@@ -6,52 +6,44 @@ const App = () => {
   const [displayMessage, setDisplayMessage] = useState("");
   const [coordinatesMessage, setCoordinatesMessage] = useState("");
   const canvasRef = useRef(null);
-  const [shape, setShape] = useState(null);
-  const [coordinates, setCoordinates] = useState([]);
-  const [addShape, setAddShape] = useState(false);
 
-  const drawShapeOnCanvas = () => {
-    if (!shape) return;
+  const [drawingPolygon, setDrawingPolygon] = useState(false);
+  const [polygonPoints, setPolygonPoints] = useState([]);
 
+  const canvasClick = (e) => {
+    if (drawingPolygon) {
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      setPolygonPoints([...polygonPoints, { x, y }]);
+      drawPolygonOnCanvas([...polygonPoints, { x, y }]);
+    }
+  };
+
+  const drawPolygonOnCanvas = (points) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
 
-    const { x, y, width, height } = shape;
-    context.strokeRect(x, y, width, height);
-  };
+    if (points.length < 2) return;
 
-  const startDrawing = (e) => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-
-    setShape({ type: "rectangle", x, y, width: 0, height: 0 });
-  };
-
-  const drawShape = (e) => {
-    if (!shape) return;
-
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const width = e.clientX - rect.left - shape.x;
-    const height = e.clientY - rect.top - shape.y;
-
-    setShape((prevShape) => ({ ...prevShape, width, height }));
-    console.log(shape);
-    drawShapeOnCanvas();
-  };
-
-  const endDrawing = () => {
-    if (shape) {
-      const updatedCoordinates = [...coordinates, shape];
-      setCoordinates(updatedCoordinates);
-      setShape(null);
-      drawShapeOnCanvas(); // Clear the canvas after drawing
+    context.beginPath();
+    context.moveTo(points[0].x, points[0].y);
+    for (let i = 1; i < points.length; i++) {
+      context.lineTo(points[i].x, points[i].y);
     }
+    context.closePath();
+    context.stroke();
   };
+
+  const togglePolygonDrawing = () => {
+    if (drawingPolygon) {
+      setPolygonPoints([]);
+    }
+    setDrawingPolygon(!drawingPolygon);
+  };
+
   const imageMapperProps = {
     name: "Redberry",
     areas: [
@@ -63,36 +55,6 @@ const App = () => {
         strokeColor: "rgba(0, 0, 0, 0, 0)",
         lineWidth: 0,
         preFillColor: "#5da0d02e",
-        center: [30, 35, 35, 53],
-      },
-      {
-        name: "Second floor",
-        shape: "poly",
-        coords: [46, 357, 46, 304, 929, 326, 928, 402],
-        fillColor: "rgba(229, 0, 0, 0.3)",
-        strokeColor: "rgba(0, 0, 0, 0, 0)",
-        lineWidth: 0,
-        preFillColor: "#5da0d02e",
-        center: [30, 35, 35, 53],
-      },
-      {
-        name: "Third floor",
-        shape: "poly",
-        coords: [46, 304, 44, 251, 931, 251, 929, 326],
-        fillColor: "rgba(229, 0, 0, 0.3)",
-        strokeColor: "rgba(0, 0, 0, 0, 0)",
-        lineWidth: 0,
-        preFillColor: "#5da0d02e",
-        center: [30, 35, 35, 53],
-      },
-      {
-        name: "Fourth floor",
-        shape: "poly",
-        coords: [44, 251, 44, 196, 933, 174, 931, 251],
-        fillColor: "rgba(229, 0, 0, 0.3)",
-        strokeColor: "rgba(0, 0, 0, 0, 0)",
-        lineWidth: 0,
-        preFillColor: "rgba(93, 160, 208, 0.5)",
         center: [30, 35, 35, 53],
       },
     ],
@@ -181,19 +143,19 @@ const App = () => {
         natural
       />
 
-      {addShape ? (
+      {drawingPolygon ? (
         <canvas
           ref={canvasRef}
           className="canvas"
           width={800}
           height={600}
-          onMouseDown={startDrawing}
-          onMouseMove={drawShape}
-          onMouseUp={endDrawing}
+          onMouseDown={(e) => canvasClick(e)}
         />
       ) : null}
 
-      <button onClick={() => setAddShape(!addShape)}>Add Shape</button>
+      <button onClick={togglePolygonDrawing}>
+        {drawingPolygon ? "Finish Drawing Polygon" : "Start Drawing Polygon"}
+      </button>
 
       <h1>{displayMessage ? displayMessage : null}</h1>
       <h2>{coordinatesMessage ? coordinatesMessage : null}</h2>
