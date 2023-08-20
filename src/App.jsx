@@ -8,6 +8,7 @@ const App = () => {
   const canvasRef = useRef(null);
   const [shape, setShape] = useState(null);
   const [coordinates, setCoordinates] = useState([]);
+  const [addShape, setAddShape] = useState(false);
 
   const drawShapeOnCanvas = () => {
     if (!shape) return;
@@ -180,15 +181,19 @@ const App = () => {
         natural
       />
 
-      <canvas
-        ref={canvasRef}
-        className="canvas"
-        width={800}
-        height={600}
-        onMouseDown={startDrawing}
-        onMouseMove={drawShape}
-        onMouseUp={endDrawing}
-      />
+      {addShape ? (
+        <canvas
+          ref={canvasRef}
+          className="canvas"
+          width={800}
+          height={600}
+          onMouseDown={startDrawing}
+          onMouseMove={drawShape}
+          onMouseUp={endDrawing}
+        />
+      ) : null}
+
+      <button onClick={() => setAddShape(!addShape)}>Add Shape</button>
 
       <h1>{displayMessage ? displayMessage : null}</h1>
       <h2>{coordinatesMessage ? coordinatesMessage : null}</h2>
