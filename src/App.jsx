@@ -9,6 +9,14 @@ const App = () => {
 
   const [drawingPolygon, setDrawingPolygon] = useState(false);
   const [polygonPoints, setPolygonPoints] = useState([]);
+  const [imageDimensions, setImageDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
+
+  const handleImageLoad = (image) => {
+    setImageDimensions({ width: image.width, height: image.height });
+  };
 
   const canvasClick = (e) => {
     if (drawingPolygon) {
@@ -16,8 +24,17 @@ const App = () => {
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      setPolygonPoints([...polygonPoints, { x, y }]);
-      drawPolygonOnCanvas([...polygonPoints, { x, y }]);
+
+      // Check if the clicked point is within the valid drawing area based on image dimensions
+      if (
+        x >= 0 &&
+        x <= imageDimensions.width &&
+        y >= 0 &&
+        y <= imageDimensions.height
+      ) {
+        setPolygonPoints([...polygonPoints, { x, y }]);
+        drawPolygonOnCanvas([...polygonPoints, { x, y }]);
+      }
     }
   };
 
@@ -132,7 +149,7 @@ const App = () => {
         src="/src/assets/apartment.png"
         map={imageMapperProps}
         onClick={onClickEventHandler}
-        onLoad={onImageLoadEventHandler}
+        onLoad={handleImageLoad}
         onMouseMove={onMouseMoveEventHandler}
         onMouseEnter={onMouseEnterEventHandler}
         onMouseLeave={onMouseLeaveEventHandler}
