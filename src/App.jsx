@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
-import Konva from "konva"; // Import Konva
 
 const App = () => {
   const [imageDimensions, setImageDimensions] = useState({
