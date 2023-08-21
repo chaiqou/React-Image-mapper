@@ -38,15 +38,6 @@ const App = () => {
       height: image.height,
     });
     setFabricCanvas(canvas);
-
-    // Add straight line
-    const straightLine = new fabric.Line([50, 50, 200, 50], {
-      stroke: "blue",
-      strokeWidth: 5,
-    });
-
-    canvas.add(straightLine);
-    canvas.renderAll();
   };
 
   const addStraightLine = () => {
