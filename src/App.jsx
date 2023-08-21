@@ -52,6 +52,7 @@ const App = () => {
     const line = createLine([100, 100, 300, 100]);
 
     canvas.add(line);
+    canvas.setActiveObject(line); // Set the line as the active object
 
     canvas.renderAll();
   };
@@ -69,17 +70,21 @@ const App = () => {
   };
 
   return (
-    <div className="image-mapper-container">
-      <ImageMapper
-        src="/src/assets/apartment.png"
-        map={imageMapperProps}
-        onLoad={handleImageLoad}
-      />
-      <canvas id="fabric-canvas" className="fabric-canvas" />
+    <div className="app-container">
+      <div className="image-mapper-container">
+        <ImageMapper
+          src="/src/assets/apartment.png"
+          map={imageMapperProps}
+          onLoad={handleImageLoad}
+        />
+      </div>
       <button onClick={handleAddShapes}>Add Shapes</button>
       <button onClick={handleCalculateCoordinates}>
         Calculate Coordinates
       </button>
+      <div className="canvas-container">
+        <canvas id="fabric-canvas" />
+      </div>
     </div>
   );
 };

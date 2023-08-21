@@ -1,15 +1,11 @@
-.image-mapper-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+/* app.css */
+.app-container {
   position: relative;
-  user-select: text;
 }
 
-canvas {
+.canvas-container {
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 2; /* Make sure the canvas is above the image */
+  z-index: 1;
 }
