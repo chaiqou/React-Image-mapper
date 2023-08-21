@@ -8,12 +8,12 @@ const App = () => {
   const canvasRef = useRef(null);
 
   const [drawingPolygon, setDrawingPolygon] = useState(false);
-  const [polygonPoints, setPolygonPoints] = useState([]);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
   const [areas, setAreas] = useState([]);
+  const [draggablePoints, setDraggablePoints] = useState([]);
 
   const imageMapperProps = {
     name: "Redberry",
@@ -32,6 +32,35 @@ const App = () => {
     ],
   };
 
+  const clearCanvas = () => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  const drawDraggablePointsOnCanvas = (points) => {
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    clearCanvas();
+
+    context.fillStyle = "blue";
+    points.forEach((point) => {
+      context.beginPath();
+      context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+      context.fill();
+    });
+
+    if (points.length >= 2) {
+      context.beginPath();
+      context.moveTo(points[0].x, points[0].y);
+      for (let i = 1; i < points.length; i++) {
+        context.lineTo(points[i].x, points[i].y);
+      }
+      context.closePath();
+      context.stroke();
+    }
+  };
+
   const canvasClick = (e) => {
     if (drawingPolygon) {
       const canvas = canvasRef.current;
@@ -39,17 +68,24 @@ const App = () => {
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      setPolygonPoints([...polygonPoints, { x, y }]);
-      drawPolygonOnCanvas([...polygonPoints, { x, y }]);
+      setDraggablePoints([...draggablePoints, { x, y }]);
+      drawDraggablePointsOnCanvas(draggablePoints);
     }
   };
 
+  const updateDraggablePoint = (index, x, y) => {
+    const updatedPoints = [...draggablePoints];
+    updatedPoints[index] = { x, y };
+    setDraggablePoints(updatedPoints);
+    drawDraggablePointsOnCanvas(updatedPoints);
+  };
+
   const stopDrawing = () => {
-    if (polygonPoints.length > 2) {
+    if (draggablePoints.length > 2) {
       const newPolygon = {
         name: `Polygon ${areas.length + 1}`,
         shape: "poly",
-        coords: polygonPoints.flatMap((point) => [point.x, point.y]),
+        coords: draggablePoints.flatMap((point) => [point.x, point.y]),
         fillColor: "rgba(229, 0, 0, 0.3)",
         strokeColor: "rgba(0, 0, 0, 0, 0)",
         lineWidth: 0,
@@ -57,32 +93,26 @@ const App = () => {
         center: [30, 35, 35, 53],
       };
 
-      console.log(newPolygon);
       setAreas([...areas, newPolygon]);
     }
 
     setDrawingPolygon(false);
-    setPolygonPoints([]);
+    setDraggablePoints([]);
+    clearCanvas();
+  };
+
+  const onMouseMoveDraggablePoint = (e, index) => {
+    if (e.buttons === 1) {
+      const canvas = canvasRef.current;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      updateDraggablePoint(index, x, y);
+    }
   };
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
-  };
-
-  const drawPolygonOnCanvas = (points) => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (points.length < 2) return;
-
-    context.beginPath();
-    context.moveTo(points[0].x, points[0].y);
-    for (let i = 1; i < points.length; i++) {
-      context.lineTo(points[i].x, points[i].y);
-    }
-    context.closePath();
-    context.stroke();
   };
 
   // 	Click on a zone in image
@@ -177,6 +207,15 @@ const App = () => {
           onMouseDown={(e) => canvasClick(e)}
         />
       ) : null}
+
+      {draggablePoints.map((point, index) => (
+        <div
+          key={index}
+          className="draggable-point"
+          style={{ left: point.x, top: point.y }}
+          onMouseMove={(e) => onMouseMoveDraggablePoint(e, index)}
+        />
+      ))}
 
       <button onClick={() => setDrawingPolygon(true)}>
         Start Drawing Polygon
