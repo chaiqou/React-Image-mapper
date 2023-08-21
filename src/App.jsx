@@ -49,7 +49,7 @@ const App = () => {
     canvas.renderAll();
   };
 
-  const addQuadraticLine = () => {
+  const addStraightLine = () => {
     if (fabricCanvas) {
       const straightLine = new fabric.Line([50, 50, 200, 50], {
         stroke: "blue",
@@ -79,7 +79,7 @@ const App = () => {
         onLoad={handleImageLoad}
       />
       <canvas id="fabric-canvas" className="fabric-canvas" />
-      <button onClick={addQuadraticLine}>Add Line</button>
+      <button onClick={addStraightLine}>Add Line</button>
     </div>
   );
 };
