@@ -39,39 +39,11 @@ const App = () => {
 
   const createLine = (coords) => {
     return new fabric.Line(coords, {
-      fill: "red",
       stroke: "red",
-      strokeWidth: 5,
+      strokeWidth: 6,
       selectable: true,
-      evented: false,
+      evented: true,
     });
-  };
-
-  const createCircle = (left, top, line) => {
-    const circle = new fabric.Circle({
-      left: left,
-      top: top,
-      strokeWidth: 5,
-      radius: 12,
-      fill: "#fff",
-      stroke: "#666",
-    });
-    circle.hasControls = circle.hasBorders = false;
-    circle.line = line;
-
-    circle.on("moving", function () {
-      const line = this.line;
-      if (line) {
-        if (circle === line.circleLeft) {
-          line.set({ x1: circle.left, y1: circle.top });
-        } else if (circle === line.circleRight) {
-          line.set({ x2: circle.left, y2: circle.top });
-        }
-        canvas.renderAll();
-      }
-    });
-
-    return circle;
   };
 
   const handleAddShapes = () => {
@@ -80,14 +52,6 @@ const App = () => {
     const line = createLine([100, 100, 300, 100]);
 
     canvas.add(line);
-
-    const circleLeft = createCircle(80, 90, line);
-    const circleRight = createCircle(290, 90, line);
-
-    line.circleLeft = circleLeft;
-    line.circleRight = circleRight;
-
-    canvas.add(circleLeft, circleRight);
 
     canvas.renderAll();
   };
