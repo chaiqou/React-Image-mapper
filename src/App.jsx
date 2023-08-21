@@ -1,17 +1,13 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import ImageMapper from "react-img-mapper";
-import { fabric } from "fabric";
 import "./app.css";
+import Konva from "konva"; // Import Konva
 
 const App = () => {
-  const [displayMessage, setDisplayMessage] = useState("");
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
-
-  const [areas, setAreas] = useState([]);
-  const [fabricCanvas, setFabricCanvas] = useState(null);
 
   const imageMapperProps = {
     name: "Redberry",
@@ -26,40 +22,11 @@ const App = () => {
         preFillColor: "#5da0d02e",
         center: [30, 35, 35, 53],
       },
-      ...areas,
     ],
   };
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
-
-    const canvas = new fabric.Canvas("fabric-canvas", {
-      width: image.width,
-      height: image.height,
-    });
-    setFabricCanvas(canvas);
-  };
-
-  const addStraightLine = () => {
-    if (fabricCanvas) {
-      const straightLine = new fabric.Line([50, 50, 200, 50], {
-        stroke: "blue",
-        strokeWidth: 5,
-      });
-
-      fabricCanvas.add(straightLine);
-      fabricCanvas.renderAll();
-
-      straightLine.on("selected", () => {
-        const coords = straightLine.path.map((point) => {
-          return { x: point[1], y: point[2] };
-        });
-
-        setDisplayMessage(
-          `Quadratic line selected with coordinates: ${JSON.stringify(coords)}`
-        );
-      });
-    }
   };
 
   return (
@@ -69,8 +36,6 @@ const App = () => {
         map={imageMapperProps}
         onLoad={handleImageLoad}
       />
-      <canvas id="fabric-canvas" className="fabric-canvas" />
-      <button onClick={addStraightLine}>Add Line</button>
     </div>
   );
 };
