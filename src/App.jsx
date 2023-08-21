@@ -56,6 +56,18 @@ const App = () => {
     canvas.renderAll();
   };
 
+  const handleCalculateCoordinates = () => {
+    if (!canvas) return;
+
+    const lines = canvas
+      .getObjects()
+      .filter((obj) => obj instanceof fabric.Line);
+
+    const lineCoordinates = lines.map((line) => line.lineCoords);
+
+    console.log("Line Coordinates:", lineCoordinates);
+  };
+
   return (
     <div className="image-mapper-container">
       <ImageMapper
@@ -65,6 +77,9 @@ const App = () => {
       />
       <canvas id="fabric-canvas" className="fabric-canvas" />
       <button onClick={handleAddShapes}>Add Shapes</button>
+      <button onClick={handleCalculateCoordinates}>
+        Calculate Coordinates
+      </button>
     </div>
   );
 };
