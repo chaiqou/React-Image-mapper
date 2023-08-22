@@ -9,6 +9,7 @@ const App = () => {
     height: 0,
   });
   const [canvas, setCanvas] = useState(null);
+  const [updatedAreas, setUpdatedAreas] = useState([]);
 
   const imageMapperProps = {
     name: "Redberry",
@@ -23,6 +24,7 @@ const App = () => {
         preFillColor: "#5da0d02e",
         center: [30, 35, 35, 53],
       },
+      ...updatedAreas,
     ],
   };
 
@@ -63,7 +65,24 @@ const App = () => {
       .getObjects()
       .filter((obj) => obj instanceof fabric.Line);
 
-    const lineCoordinates = lines.map((line) => line.lineCoords);
+    const lineCoordinates = lines.map((line) => {
+      const { bl, br, tl, tr } = line.lineCoords;
+      return [bl.x, bl.y, br.x, br.y, tr.x, tr.y, tl.x, tl.y];
+    });
+
+    const updatedArea = {
+      name: "New Area",
+      shape: "poly",
+      coords: lineCoordinates.flat(),
+      fillColor: "rgba(229, 0, 0, 0.3)",
+      strokeColor: "rgba(0, 0, 0, 0, 0)",
+      lineWidth: 0,
+      preFillColor: "#5da0d02e",
+    };
+
+    imageMapperProps.areas.push(updatedAreas);
+    setUpdatedAreas([...updatedAreas, updatedArea]);
+    console.log(updatedArea);
 
     console.log("Line Coordinates:", lineCoordinates);
   };
