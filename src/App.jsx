@@ -3,31 +3,19 @@ import ImageMapper from "react-img-mapper";
 import "./app.css";
 
 const App = () => {
-  const initialState = {
-    name: "First floor",
-    shape: "poly",
-    coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
-    fillColor: "rgba(229, 0, 0, 0.3)",
-    strokeColor: "rgba(0, 0, 0, 0, 0)",
-    lineWidth: 0,
-    preFillColor: "#5da0d02e",
-    center: [30, 35, 35, 53],
-  };
-
   const [displayMessage, setDisplayMessage] = useState("");
   const [coordinatesMessage, setCoordinatesMessage] = useState("");
-  const canvasRef = useRef(null);
-
   const [drawingPolygon, setDrawingPolygon] = useState(false);
+  const [drawingMode, setDrawingMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [areas, setAreas] = useState([]);
+  const [draggablePoints, setDraggablePoints] = useState([]);
+  const [hoveredPointIndex, setHoveredPointIndex] = useState(-1);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
-  const [areas, setAreas] = useState([initialState]);
-  const [draggablePoints, setDraggablePoints] = useState([]);
-  const [drawingMode, setDrawingMode] = useState(false);
-  const [editMode, setEditMode] = useState(false);
-  const [hoveredPointIndex, setHoveredPointIndex] = useState(-1);
+  const canvasRef = useRef(null);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -42,10 +30,10 @@ const App = () => {
 
     if (drawingMode) {
       if (editMode) {
-        context.fillStyle = "blue";
+        context.fillStyle = "red";
         points.forEach((point) => {
           context.beginPath();
-          context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+          context.arc(point.x, point.y, 7, 0, Math.PI * 2);
           context.fill();
         });
 
@@ -59,10 +47,10 @@ const App = () => {
           context.stroke();
         }
       } else {
-        context.fillStyle = "blue";
+        context.fillStyle = "red";
         points.forEach((point) => {
           context.beginPath();
-          context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+          context.arc(point.x, point.y, 7, 0, Math.PI * 2);
           context.fill();
         });
 
@@ -155,13 +143,6 @@ const App = () => {
     setImageDimensions({ width: image.width, height: image.height });
   };
 
-  // 	Click on a zone in image
-  const onClickEventHandler = (area) => {
-    setDisplayMessage(
-      `You clicked on ${area.name} at coordinant ${JSON.stringify(area.coords)}`
-    );
-  };
-
   return (
     <div className="image-mapper-container">
       <ImageMapper
@@ -170,7 +151,6 @@ const App = () => {
           name: "Redberry",
           areas: [...areas],
         }}
-        onClick={onClickEventHandler}
         onLoad={handleImageLoad}
       />
 
@@ -188,14 +168,6 @@ const App = () => {
         draggablePoints.map((point, index) => (
           <div
             key={index}
-            className="draggable-point"
-            style={{
-              left: point.x,
-              top: point.y,
-              cursor: editMode ? "pointer" : "auto",
-              borderColor:
-                editMode && index === hoveredPointIndex ? "red" : "blue",
-            }}
             onMouseMove={() => onMouseMoveDraggablePoint(index)}
           />
         ))}
