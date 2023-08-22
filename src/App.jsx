@@ -3,6 +3,17 @@ import ImageMapper from "react-img-mapper";
 import "./app.css";
 
 const App = () => {
+  const initialState = {
+    name: "First floor",
+    shape: "poly",
+    coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
+    fillColor: "rgba(229, 0, 0, 0.3)",
+    strokeColor: "rgba(0, 0, 0, 0, 0)",
+    lineWidth: 0,
+    preFillColor: "#5da0d02e",
+    center: [30, 35, 35, 53],
+  };
+
   const [displayMessage, setDisplayMessage] = useState("");
   const [coordinatesMessage, setCoordinatesMessage] = useState("");
   const canvasRef = useRef(null);
@@ -12,25 +23,8 @@ const App = () => {
     width: 0,
     height: 0,
   });
-  const [areas, setAreas] = useState([]);
+  const [areas, setAreas] = useState([initialState]);
   const [draggablePoints, setDraggablePoints] = useState([]);
-
-  const imageMapperProps = {
-    name: "Redberry",
-    areas: [
-      {
-        name: "First floor",
-        shape: "poly", // (rect,poly,circ)
-        coords: [46, 357, 928, 402, 928, 473, 47, 409], // [x1, y1, x2, y1, x2, y2, x1, y2]
-        fillColor: "rgba(229, 0, 0, 0.3)",
-        strokeColor: "rgba(0, 0, 0, 0, 0)",
-        lineWidth: 0,
-        preFillColor: "#5da0d02e",
-        center: [30, 35, 35, 53],
-      },
-      ...areas,
-    ],
-  };
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -126,7 +120,10 @@ const App = () => {
     <div className="image-mapper-container">
       <ImageMapper
         src="/src/assets/apartment.png"
-        map={imageMapperProps}
+        map={{
+          name: "Redberry",
+          areas: [...areas],
+        }}
         onClick={onClickEventHandler}
         onLoad={handleImageLoad}
       />
