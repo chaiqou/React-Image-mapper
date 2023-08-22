@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ImageMapper from "react-img-mapper";
-import { fabric } from "fabric"; // Import Fabric.js
+import { fabric } from "fabric";
 import "./app.css";
 
 const App = () => {
@@ -8,7 +8,7 @@ const App = () => {
     width: 0,
     height: 0,
   });
-  const [canvas, setCanvas] = useState(null); // Store the Fabric.js canvas
+  const [canvas, setCanvas] = useState(null);
 
   const imageMapperProps = {
     name: "Redberry",
@@ -29,7 +29,6 @@ const App = () => {
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
 
-    // Initialize Fabric.js canvas
     const fabricCanvas = new fabric.Canvas("fabric-canvas", {
       width: image.width,
       height: image.height,
