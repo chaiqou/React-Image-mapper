@@ -122,65 +122,6 @@ const App = () => {
     );
   };
 
-  // 	Image loading and canvas initialization completed
-  const onImageLoadEventHandler = () => {
-    setDisplayMessage("Load first!");
-  };
-
-  // Moving mouse on a zone in image
-  const onMouseMoveEventHandler = (area, _, event) => {
-    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
-    setCoordinatesMessage(
-      "You moved on " +
-        area.shape +
-        " " +
-        area.name +
-        ' at coords {"x":' +
-        coords.x +
-        ',"y":' +
-        coords.y +
-        "} !"
-    );
-  };
-
-  // Hovering a zone in image
-  const onMouseEnterEventHandler = (area) => {
-    setCoordinatesMessage(
-      `You entered ${area.shape} ${area.name} at coordinant ${JSON.stringify(
-        area.coords
-      )} !`
-    );
-  };
-
-  // Leaving a zone in image
-  const onMouseLeaveEventHandler = (area) => {
-    setCoordinatesMessage(
-      `You leaved ${area.shape} ${area.name} at coordinant ${JSON.stringify(
-        area.coords
-      )} !`
-    );
-  };
-
-  // Click outside of a zone in image
-  const onClickOutsideImageZoneEventHandler = (event) => {
-    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
-    setDisplayMessage(
-      `You clicked on the image outside zone at coords ${JSON.stringify(
-        coords
-      )} !`
-    );
-  };
-
-  // Moving mouse on the image itself	outside zone
-  const onImageMouseMoveEventHandler = (event) => {
-    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
-    setDisplayMessage(
-      `You moved on the image outside zone at coords ${JSON.stringify(
-        coords
-      )} !`
-    );
-  };
-
   return (
     <div className="image-mapper-container">
       <ImageMapper
@@ -188,14 +129,6 @@ const App = () => {
         map={imageMapperProps}
         onClick={onClickEventHandler}
         onLoad={handleImageLoad}
-        onMouseMove={onMouseMoveEventHandler}
-        onMouseEnter={onMouseEnterEventHandler}
-        onMouseLeave={onMouseLeaveEventHandler}
-        onImageClick={onClickOutsideImageZoneEventHandler}
-        onImageMouseMove={onImageMouseMoveEventHandler}
-        responsive="true"
-        parentWidth={920}
-        natural
       />
 
       {drawingPolygon ? (
