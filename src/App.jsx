@@ -27,6 +27,7 @@ const App = () => {
   const [draggablePoints, setDraggablePoints] = useState([]);
   const [drawingMode, setDrawingMode] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [hoveredPointIndex, setHoveredPointIndex] = useState(-1);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -141,6 +142,7 @@ const App = () => {
 
   const onMouseMoveDraggablePoint = (e, index) => {
     if (editMode && e.buttons === 1) {
+      setHoveredPointIndex(index);
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -183,16 +185,20 @@ const App = () => {
       ) : null}
 
       {drawingMode &&
-        (!editMode
-          ? draggablePoints.map((point, index) => (
-              <div
-                key={index}
-                className="draggable-point"
-                style={{ left: point.x, top: point.y }}
-                onMouseMove={(e) => onMouseMoveDraggablePoint(e, index)}
-              />
-            ))
-          : null)}
+        draggablePoints.map((point, index) => (
+          <div
+            key={index}
+            className="draggable-point"
+            style={{
+              left: point.x,
+              top: point.y,
+              cursor: editMode ? "pointer" : "auto",
+              borderColor:
+                editMode && index === hoveredPointIndex ? "red" : "blue",
+            }}
+            onMouseMove={() => onMouseMoveDraggablePoint(index)}
+          />
+        ))}
 
       <button onClick={() => setDrawingMode(!drawingMode)}>
         {drawingMode ? "Exit Drawing Mode" : "Enter Drawing Mode"}
