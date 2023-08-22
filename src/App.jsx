@@ -68,6 +68,11 @@ const App = () => {
     console.log("Line Coordinates:", lineCoordinates);
   };
 
+  const handleStopDrawing = () => {
+    let element = document.querySelector(".canvas-container");
+    element.parentNode.removeChild(element);
+  };
+
   return (
     <div className="app-container">
       <div className="image-mapper-container">
@@ -81,6 +86,7 @@ const App = () => {
       <button onClick={handleCalculateCoordinates}>
         Calculate Coordinates
       </button>
+      <button onClick={handleStopDrawing}>Stop Drawing</button>
       <div className="canvas-container">
         <canvas id="fabric-canvas" />
       </div>
