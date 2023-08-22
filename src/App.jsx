@@ -25,6 +25,8 @@ const App = () => {
   });
   const [areas, setAreas] = useState([initialState]);
   const [draggablePoints, setDraggablePoints] = useState([]);
+  const [drawingMode, setDrawingMode] = useState(false);
+  const [editMode, setEditMode] = useState(false);
 
   const clearCanvas = () => {
     const canvas = canvasRef.current;
@@ -37,33 +39,75 @@ const App = () => {
     const context = canvas.getContext("2d");
     clearCanvas();
 
-    context.fillStyle = "blue";
-    points.forEach((point) => {
-      context.beginPath();
-      context.arc(point.x, point.y, 5, 0, Math.PI * 2);
-      context.fill();
-    });
+    if (drawingMode) {
+      if (editMode) {
+        context.fillStyle = "blue";
+        points.forEach((point) => {
+          context.beginPath();
+          context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+          context.fill();
+        });
 
-    if (points.length >= 2) {
-      context.beginPath();
-      context.moveTo(points[0].x, points[0].y);
-      for (let i = 1; i < points.length; i++) {
-        context.lineTo(points[i].x, points[i].y);
+        if (points.length >= 2) {
+          context.beginPath();
+          context.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            context.lineTo(points[i].x, points[i].y);
+          }
+          context.closePath();
+          context.stroke();
+        }
+      } else {
+        context.fillStyle = "blue";
+        points.forEach((point) => {
+          context.beginPath();
+          context.arc(point.x, point.y, 5, 0, Math.PI * 2);
+          context.fill();
+        });
+
+        if (points.length >= 2) {
+          context.beginPath();
+          context.moveTo(points[0].x, points[0].y);
+          for (let i = 1; i < points.length; i++) {
+            context.lineTo(points[i].x, points[i].y);
+          }
+          context.closePath();
+          context.stroke();
+        }
       }
-      context.closePath();
-      context.stroke();
     }
   };
 
   const canvasClick = (e) => {
-    if (drawingPolygon) {
+    if (drawingMode) {
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
 
-      setDraggablePoints([...draggablePoints, { x, y }]);
-      drawDraggablePointsOnCanvas(draggablePoints);
+      if (editMode) {
+        const clickedPoint = { x, y };
+        let closestIndex = -1;
+        let closestDistance = Infinity;
+
+        draggablePoints.forEach((point, index) => {
+          const distance = Math.sqrt(
+            (clickedPoint.x - point.x) ** 2 + (clickedPoint.y - point.y) ** 2
+          );
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestIndex = index;
+          }
+        });
+
+        if (closestIndex !== -1) {
+          updateDraggablePoint(closestIndex, x, y);
+        }
+      } else {
+        setDraggablePoints([...draggablePoints, { x, y }]);
+        drawDraggablePointsOnCanvas(draggablePoints);
+      }
     }
   };
 
@@ -96,7 +140,7 @@ const App = () => {
   };
 
   const onMouseMoveDraggablePoint = (e, index) => {
-    if (e.buttons === 1) {
+    if (editMode && e.buttons === 1) {
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -138,14 +182,22 @@ const App = () => {
         />
       ) : null}
 
-      {draggablePoints.map((point, index) => (
-        <div
-          key={index}
-          className="draggable-point"
-          style={{ left: point.x, top: point.y }}
-          onMouseMove={(e) => onMouseMoveDraggablePoint(e, index)}
-        />
-      ))}
+      {drawingMode &&
+        (!editMode
+          ? draggablePoints.map((point, index) => (
+              <div
+                key={index}
+                className="draggable-point"
+                style={{ left: point.x, top: point.y }}
+                onMouseMove={(e) => onMouseMoveDraggablePoint(e, index)}
+              />
+            ))
+          : null)}
+
+      <button onClick={() => setDrawingMode(!drawingMode)}>
+        {drawingMode ? "Exit Drawing Mode" : "Enter Drawing Mode"}
+      </button>
+      <button onClick={() => setEditMode(!editMode)}>Toggle Edit Mode</button>
 
       <button onClick={() => setDrawingPolygon(true)}>
         Start Drawing Polygon
