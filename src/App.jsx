@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
 
@@ -25,6 +25,7 @@ const App = () => {
 
   const drawDraggablePointsOnCanvas = (points) => {
     const canvas = canvasRef.current;
+    if (!canvas) return;
     const context = canvas.getContext("2d");
     clearCanvas();
 
@@ -67,6 +68,13 @@ const App = () => {
     }
   };
 
+  // Checks akways up to dated dragabble points state
+  useEffect(() => {
+    if (draggablePoints.length > 0) {
+      drawDraggablePointsOnCanvas(draggablePoints);
+    }
+  }, [draggablePoints]);
+
   const canvasClick = (e) => {
     if (drawingMode) {
       const canvas = canvasRef.current;
@@ -94,7 +102,7 @@ const App = () => {
           updateDraggablePoint(closestIndex, x, y);
         }
       } else {
-        setDraggablePoints([...draggablePoints, { x, y }]);
+        setDraggablePoints((prevPoints) => [...prevPoints, { x, y }]);
         drawDraggablePointsOnCanvas(draggablePoints);
       }
     }
