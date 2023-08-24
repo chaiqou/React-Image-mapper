@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import ImageMapper from "react-img-mapper";
+import ReactDesignerComponent from "../src/react-designer-main";
 import "./app.css";
 
 const App = () => {
@@ -145,6 +146,7 @@ const App = () => {
 
   return (
     <div className="image-mapper-container">
+      {/* <ReactDesignerComponent /> */}
       <ImageMapper
         src="/src/assets/apartment.png"
         map={{
