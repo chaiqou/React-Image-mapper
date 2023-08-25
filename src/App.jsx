@@ -18,17 +18,17 @@ const App = () => {
   const canvasRef = useRef(null);
 
   const clearCanvas = () => {
-    const canvas = canvasRef.current; // get canvas element
-    const context = canvas.getContext("2d"); // get drawing context (canvas API)
-    context.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
+    const canvas = canvasRef.current;
+    const context = canvas.getContext("2d");
+    context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
   const drawAndConnectRedCircles = (context, points) => {
-    context.fillStyle = "red"; // set the fill color to red
+    context.fillStyle = "red";
     points.forEach((point) => {
       context.beginPath(); // start a new drawing path
       context.arc(point.x, point.y, 7, 0, 3 * 2); // draw a circle
-      context.fill(); // fill the circle with the set color
+      context.fill();
 
       // draw lines connecting the points if there are at least 2 points
       if (points.length >= 2) {
@@ -37,8 +37,8 @@ const App = () => {
         for (let i = 1; i < points.length; i++) {
           context.lineTo(points[i].x, points[i].y); // draw lines to other points
         }
-        context.closePath(); // close the path
-        context.stroke(); // raw the lines
+        context.closePath();
+        context.stroke();
       }
     });
   };
@@ -47,7 +47,7 @@ const App = () => {
     event.preventDefault();
 
     const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect(); // Get the position of the canvas on the page
+    const rect = canvas.getBoundingClientRect();
     const x = event.clientX - rect.left; // Calculate the x of the mouse click relative to the canvas
     const y = event.clientY - rect.top; // Calculate the y of the mouse click relative to the canvas
 
