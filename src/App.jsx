@@ -75,38 +75,64 @@ const App = () => {
     }
   }, [draggablePoints]);
 
+  useEffect(() => {
+    if (canvasRef.current) {
+      canvasRef.current.addEventListener("mousedown", handleCanvasMouseDown);
+    }
+
+    return () => {
+      if (canvasRef.current) {
+        canvasRef.current.removeEventListener(
+          "mousedown",
+          handleCanvasMouseDown
+        );
+      }
+    };
+  }, []);
+
   const handleCanvasMouseDown = (event) => {
     event.preventDefault();
-    console.log(event);
-    if (drawingMode) {
-      const canvas = canvasRef.current;
-      const rect = canvas.getBoundingClientRect();
-      const x = event.clientX - rect.left;
-      const y = event.clientY - rect.top;
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
 
-      if (editMode) {
-        const clickedPoint = { x, y };
-        let closestIndex = -1;
-        let closestDistance = Infinity;
+    let isDragging = false;
+    let draggedIndex = -1;
 
-        draggablePoints.forEach((point, index) => {
-          const distance = Math.sqrt(
-            (clickedPoint.x - point.x) ** 2 + (clickedPoint.y - point.y) ** 2
-          );
-
-          if (distance < closestDistance) {
-            closestDistance = distance;
-            closestIndex = index;
-          }
-        });
-
-        if (closestIndex !== -1) {
-          updateDraggablePoint(closestIndex, x, y);
+    if (editMode) {
+      draggablePoints.forEach((point, index) => {
+        const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
+        if (distance < 5 * 2) {
+          isDragging = true;
+          draggedIndex = index;
         }
-      } else {
-        setDraggablePoints((prevPoints) => [...prevPoints, { x, y }]);
-        drawDraggablePointsOnCanvas(draggablePoints);
+      });
+    }
+
+    const handleMouseMove = (moveEvent) => {
+      if (isDragging && draggedIndex !== -1) {
+        const newX = moveEvent.clientX - rect.left;
+        const newY = moveEvent.clientY - rect.top;
+        updateDraggablePoint(draggedIndex, newX, newY);
       }
+    };
+
+    const handleMouseUp = () => {
+      isDragging = false;
+      draggedIndex = -1;
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    if (editMode) {
+      if (isDragging) {
+        window.addEventListener("mousemove", handleMouseMove);
+        window.addEventListener("mouseup", handleMouseUp);
+      }
+    } else {
+      setDraggablePoints((prevPoints) => [...prevPoints, { x, y }]);
+      drawDraggablePointsOnCanvas([...draggablePoints, { x, y }]);
     }
   };
 
@@ -170,8 +196,15 @@ const App = () => {
           className="canvas"
           width={imageDimensions.width}
           height={imageDimensions.height}
-          onMouseDown={(event) => handleCanvasMouseDown(event)}
-          style={{ cursor: "pointer" }}
+          onMouseDown={handleCanvasMouseDown}
+          onMouseMove={(e) => {
+            if (editMode && e.buttons === 1) {
+              onMouseMoveDraggablePoint(e, hoveredPointIndex);
+            }
+          }}
+          onMouseUp={() => {
+            setHoveredPointIndex(-1);
+          }}
         />
       ) : null}
 
