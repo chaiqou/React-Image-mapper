@@ -18,121 +18,72 @@ const App = () => {
   const canvasRef = useRef(null);
 
   const clearCanvas = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext("2d");
-    context.clearRect(0, 0, canvas.width, canvas.height);
+    const canvas = canvasRef.current; // get canvas element
+    const context = canvas.getContext("2d"); // get drawing context (canvas API)
+    context.clearRect(0, 0, canvas.width, canvas.height); // clear canvas
   };
 
-  const drawDraggablePointsOnCanvas = (points) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const context = canvas.getContext("2d");
-    clearCanvas();
+  const drawAndConnectRedCircles = (context, points) => {
+    context.fillStyle = "red"; // set the fill color to red
+    points.forEach((point) => {
+      context.beginPath(); // start a new drawing path
+      context.arc(point.x, point.y, 7, 0, 3 * 2); // draw a circle
+      context.fill(); // fill the circle with the set color
 
-    if (drawingMode) {
-      if (editMode) {
-        context.fillStyle = "red";
-        points.forEach((point) => {
-          context.beginPath();
-          context.arc(point.x, point.y, 7, 0, Math.PI * 2);
-          context.fill();
-        });
-
-        if (points.length >= 2) {
-          context.beginPath();
-          context.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            context.lineTo(points[i].x, points[i].y);
-          }
-          context.closePath();
-          context.stroke();
+      // draw lines connecting the points if there are at least 2 points
+      if (points.length >= 2) {
+        context.beginPath(); // start a new path for lines
+        context.moveTo(points[0].x, points[0].y); // move to the first point
+        for (let i = 1; i < points.length; i++) {
+          context.lineTo(points[i].x, points[i].y); // draw lines to other points
         }
-      } else {
-        context.fillStyle = "red";
-        points.forEach((point) => {
-          context.beginPath();
-          context.arc(point.x, point.y, 7, 0, Math.PI * 2);
-          context.fill();
-        });
-
-        if (points.length >= 2) {
-          context.beginPath();
-          context.moveTo(points[0].x, points[0].y);
-          for (let i = 1; i < points.length; i++) {
-            context.lineTo(points[i].x, points[i].y);
-          }
-          context.closePath();
-          context.stroke();
-        }
+        context.closePath(); // close the path
+        context.stroke(); // raw the lines
       }
-    }
+    });
   };
-
-  // Checks akways up to dated dragabble points state
-  useEffect(() => {
-    if (draggablePoints.length > 0) {
-      drawDraggablePointsOnCanvas(draggablePoints);
-    }
-  }, [draggablePoints]);
-
-  useEffect(() => {
-    if (canvasRef.current) {
-      canvasRef.current.addEventListener("mousedown", handleCanvasMouseDown);
-    }
-
-    return () => {
-      if (canvasRef.current) {
-        canvasRef.current.removeEventListener(
-          "mousedown",
-          handleCanvasMouseDown
-        );
-      }
-    };
-  }, []);
 
   const handleCanvasMouseDown = (event) => {
     event.preventDefault();
+
     const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const rect = canvas.getBoundingClientRect(); // Get the position of the canvas on the page
+    const x = event.clientX - rect.left; // Calculate the x of the mouse click relative to the canvas
+    const y = event.clientY - rect.top; // Calculate the y of the mouse click relative to the canvas
 
-    let isDragging = false;
-    let draggedIndex = -1;
-
+    // If we're in edit mode, check if the mouse click is near an existing point
     if (editMode) {
-      draggablePoints.forEach((point, index) => {
-        const distance = Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2);
-        if (distance < 5 * 2) {
-          isDragging = true;
-          draggedIndex = index;
-        }
-      });
-    }
+      // Find the index of a point that is close to the mouse click
+      const draggedIndex = draggablePoints.findIndex(
+        (point) => Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2) < 5 * 2
+      );
 
-    const handleMouseMove = (moveEvent) => {
-      if (isDragging && draggedIndex !== -1) {
-        const newX = moveEvent.clientX - rect.left;
-        const newY = moveEvent.clientY - rect.top;
-        updateDraggablePoint(draggedIndex, newX, newY);
-      }
-    };
+      // If we found a nearby point, set up mouse move and up event listeners for dragging
+      if (draggedIndex !== -1) {
+        const handleMouseMove = (moveEvent) => {
+          const newX = moveEvent.clientX - rect.left;
+          const newY = moveEvent.clientY - rect.top;
+          updateDraggablePoint(draggedIndex, newX, newY);
+        };
 
-    const handleMouseUp = () => {
-      isDragging = false;
-      draggedIndex = -1;
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
-    };
+        const handleMouseUp = () => {
+          // When the mouse button is released, remove the event listeners
+          window.removeEventListener("mousemove", handleMouseMove);
+          window.removeEventListener("mouseup", handleMouseUp);
+        };
 
-    if (editMode) {
-      if (isDragging) {
+        // When the mouse is moved while clicking, call handleMouseMove
         window.addEventListener("mousemove", handleMouseMove);
+        // When the mouse button is released, call handleMouseUp
         window.addEventListener("mouseup", handleMouseUp);
       }
     } else {
-      setDraggablePoints((prevPoints) => [...prevPoints, { x, y }]);
-      drawDraggablePointsOnCanvas([...draggablePoints, { x, y }]);
+      // If we're not in edit mode, add a new point to the draggablePoints list
+      const newPoint = { x, y };
+      setDraggablePoints((prevPoints) => [...prevPoints, newPoint]);
+
+      // Redraw all the draggable points on the canvas, including the new one
+      drawDraggablePointsOnCanvas([...draggablePoints, newPoint]);
     }
   };
 
@@ -178,6 +129,32 @@ const App = () => {
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
   };
+
+  const drawDraggablePointsOnCanvas = (points) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const context = canvas.getContext("2d");
+    clearCanvas();
+    if (drawingMode) {
+      drawAndConnectRedCircles(context, points);
+    }
+  };
+
+  useEffect(() => {
+    if (draggablePoints.length > 0) {
+      drawDraggablePointsOnCanvas(draggablePoints);
+    }
+  }, [draggablePoints]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (canvas) {
+      canvas.addEventListener("mousedown", handleCanvasMouseDown);
+      return () => {
+        canvas.removeEventListener("mousedown", handleCanvasMouseDown);
+      };
+    }
+  }, []);
 
   return (
     <div className="image-mapper-container">
