@@ -75,12 +75,14 @@ const App = () => {
     }
   }, [draggablePoints]);
 
-  const canvasClick = (e) => {
+  const handleCanvasMouseDown = (event) => {
+    event.preventDefault();
+    console.log(event);
     if (drawingMode) {
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
 
       if (editMode) {
         const clickedPoint = { x, y };
@@ -168,7 +170,7 @@ const App = () => {
           className="canvas"
           width={imageDimensions.width}
           height={imageDimensions.height}
-          onMouseDown={(e) => canvasClick(e)}
+          onMouseDown={(event) => handleCanvasMouseDown(event)}
           style={{ cursor: "pointer" }}
         />
       ) : null}
