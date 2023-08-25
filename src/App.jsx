@@ -205,6 +205,7 @@ const App = () => {
           onMouseUp={() => {
             setHoveredPointIndex(-1);
           }}
+          style={{ cursor: editMode ? "pointer" : "crosshair" }}
         />
       ) : null}
 
