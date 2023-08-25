@@ -169,6 +169,7 @@ const App = () => {
           width={imageDimensions.width}
           height={imageDimensions.height}
           onMouseDown={(e) => canvasClick(e)}
+          style={{ cursor: "pointer" }}
         />
       ) : null}
 
