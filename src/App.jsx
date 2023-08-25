@@ -96,6 +96,7 @@ const App = () => {
 
   const stopDrawing = () => {
     if (draggablePoints.length > 2) {
+      console.log(draggablePoints.flatMap((point) => [point.x, point.y]));
       const newPolygon = {
         name: `Polygon ${areas.length + 1}`,
         shape: "poly",
@@ -156,6 +157,22 @@ const App = () => {
     }
   }, []);
 
+  const onMouseMoveEventHandler = (area, _, event) => {
+    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
+    setCoordinatesMessage(
+      `You moved on ${area.shape} ${coords.x} - ${coords.y}`
+    );
+  };
+
+  const onImageMouseMoveEventHandler = (event) => {
+    const coords = { x: event.nativeEvent.layerX, y: event.nativeEvent.layerY };
+    setDisplayMessage(
+      `You moved on the image outside zone at coords ${JSON.stringify(
+        coords
+      )} !`
+    );
+  };
+
   return (
     <div className="image-mapper-container">
       <ImageMapper
@@ -165,6 +182,8 @@ const App = () => {
           areas: [...areas],
         }}
         onLoad={handleImageLoad}
+        onMouseMove={onMouseMoveEventHandler}
+        onImageMouseMove={onImageMouseMoveEventHandler}
       />
 
       {drawingPolygon ? (
