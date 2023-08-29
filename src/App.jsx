@@ -174,57 +174,56 @@ const App = () => {
   };
 
   return (
-    <div className="image-mapper-container">
-      <ImageMapper
-        src="/src/assets/apartment.png"
-        map={{
-          name: "Redberry",
-          areas: [...areas],
-        }}
-        onLoad={handleImageLoad}
-        onMouseMove={onMouseMoveEventHandler}
-        onImageMouseMove={onImageMouseMoveEventHandler}
-      />
-
-      {drawingPolygon ? (
-        <canvas
-          ref={canvasRef}
-          className="canvas"
-          width={imageDimensions.width}
-          height={imageDimensions.height}
-          onMouseDown={handleCanvasMouseDown}
-          onMouseMove={(e) => {
-            if (editMode && e.buttons === 1) {
-              onMouseMoveDraggablePoint(e, hoveredPointIndex);
-            }
+    <div className="image-mapper-wrapper">
+      <div className="image-mapper-container">
+        <ImageMapper
+          src="/src/assets/apartment.png"
+          map={{
+            name: "Redberry",
+            areas: [...areas],
           }}
-          onMouseUp={() => {
-            setHoveredPointIndex(-1);
-          }}
-          style={{ cursor: editMode ? "pointer" : "crosshair" }}
+          onLoad={handleImageLoad}
+          onMouseMove={onMouseMoveEventHandler}
+          onImageMouseMove={onImageMouseMoveEventHandler}
         />
-      ) : null}
 
-      {drawingMode &&
-        draggablePoints.map((point, index) => (
-          <div
-            key={index}
-            onMouseMove={() => onMouseMoveDraggablePoint(index)}
+        {drawingPolygon ? (
+          <canvas
+            ref={canvasRef}
+            className="canvas"
+            width={imageDimensions.width}
+            height={imageDimensions.height}
+            onMouseDown={handleCanvasMouseDown}
+            onMouseMove={(e) => {
+              if (editMode && e.buttons === 1) {
+                onMouseMoveDraggablePoint(e, hoveredPointIndex);
+              }
+            }}
+            onMouseUp={() => {
+              setHoveredPointIndex(-1);
+            }}
+            style={{
+              cursor: editMode ? "pointer" : "crosshair",
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              zIndex: 2,
+            }}
           />
-        ))}
+        ) : null}
+      </div>
 
-      <button onClick={() => setDrawingMode(!drawingMode)}>
-        {drawingMode ? "Exit Drawing Mode" : "Enter Drawing Mode"}
-      </button>
-      <button onClick={() => setEditMode(!editMode)}>Toggle Edit Mode</button>
-
-      <button onClick={() => setDrawingPolygon(true)}>
-        Start Drawing Polygon
-      </button>
-      <button onClick={stopDrawing}>Stop Drawing</button>
-
-      <h1>{displayMessage ? displayMessage : null}</h1>
-      <h2>{coordinatesMessage ? coordinatesMessage : null}</h2>
+      <div className="buttons-container">
+        <button onClick={() => setDrawingMode(!drawingMode)}>
+          {drawingMode ? "Exit Drawing Mode" : "Enter Drawing Mode"}
+        </button>
+        <button onClick={() => setEditMode(!editMode)}>Toggle Edit Mode</button>
+        <button onClick={() => setDrawingPolygon(true)}>
+          Start Drawing Polygon
+        </button>
+        <button onClick={stopDrawing}>Stop Drawing</button>
+      </div>
     </div>
   );
 };

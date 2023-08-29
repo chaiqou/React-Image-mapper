@@ -1,11 +1,19 @@
-.image-mapper-container {
+.image-mapper-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: relative;
   user-select: text;
 }
 
-canvas {
+.image-mapper-container {
+  position: relative;
+}
+
+.buttons-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2; /* Make sure the canvas is above the image */
+  top: 10px;
+  right: 10px;
+  z-index: 3;
 }
