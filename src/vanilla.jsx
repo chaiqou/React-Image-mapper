@@ -26,13 +26,13 @@ const Vanilla = () => {
   const drawAndConnectRedCircles = (context, points) => {
     context.fillStyle = "red";
     points.forEach((point) => {
-      context.beginPath(); // start a new drawing path
-      context.arc(point.x, point.y, 7, 0, 3 * 2); // draw a circle
+      context.beginPath();
+      context.arc(point.x, point.y, 3.5, 0, 3 * 2);
       context.fill();
 
       // draw lines connecting the points if there are at least 2 points
       if (points.length >= 2) {
-        context.beginPath(); // start a new path for lines
+        context.beginPath();
         context.moveTo(points[0].x, points[0].y); // move to the first point
         for (let i = 1; i < points.length; i++) {
           context.lineTo(points[i].x, points[i].y); // draw lines to other points
