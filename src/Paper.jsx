@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import paper from "paper";
+import paper, { Point } from "paper";
 
 const Paper = () => {
   useEffect(() => {
@@ -14,6 +14,8 @@ const Paper = () => {
         });
       }
       path.add(event.point);
+      path.closed = true;
+      path.fullySelected = true;
     };
 
     // Attach event listener to the Paper.js canvas
