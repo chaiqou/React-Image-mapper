@@ -7,12 +7,13 @@ const Paper = () => {
   const handleStartDrawing = (event) => {
     if (!path) {
       path = new paper.Path({
-        strokeColor: "black",
+        strokeColor: "green",
+        strokeWidth: 2,
+        closed: true,
+        fullySelected: true,
       });
     }
     path.add(event.point);
-    path.closed = true;
-    path.fullySelected = true;
   };
 
   const startDrawing = () => {
