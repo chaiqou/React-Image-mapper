@@ -1,15 +1,25 @@
 import React, { useState, useRef } from "react";
 import paper from "paper";
+import ImageMapper from "react-img-mapper";
+import "./app.css";
 
 const Paper = () => {
   const [drawing, setDrawing] = useState(false);
-  const [paths, setPaths] = useState([]);
+  const [areas, setAreas] = useState([]);
+  const [imageDimensions, setImageDimensions] = useState({
+    width: 0,
+    height: 0,
+  });
   const currentPathRef = useRef(null);
+
+  const handleImageLoad = (image) => {
+    setImageDimensions({ width: image.width, height: image.height });
+  };
 
   const handleStartDrawing = (event) => {
     if (!currentPathRef.current) {
       currentPathRef.current = new paper.Path({
-        strokeColor: "green",
+        strokeColor: "#DE3163",
         strokeWidth: 2,
         closed: true,
         fullySelected: true,
@@ -19,8 +29,9 @@ const Paper = () => {
   };
 
   const startDrawing = () => {
-    setDrawing(true);
     paper.setup("canvas");
+
+    setDrawing(true);
     paper.view.onClick = handleStartDrawing;
   };
 
@@ -30,11 +41,36 @@ const Paper = () => {
   };
 
   return (
-    <>
-      <canvas style={{ width: "100%", height: "100%" }} id="canvas" />
-      <button onClick={startDrawing}>Start Drawing</button>
-      <button onClick={stopDrawing}>Stop Drawing</button>
-    </>
+    <div className="image-mapper-wrapper">
+      <div className="image-mapper-container">
+        <ImageMapper
+          src="/src/assets/apartment.png"
+          map={{
+            name: "Redberry",
+            areas: [...areas],
+          }}
+          onLoad={handleImageLoad}
+        />
+
+        <canvas
+          id="canvas"
+          width={imageDimensions.width}
+          height={imageDimensions.height}
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            zIndex: 2,
+          }}
+        />
+      </div>
+
+      <div className="buttons-container">
+        <button onClick={startDrawing}>Start Drawing</button>
+        <button onClick={stopDrawing}>Stop Drawing</button>
+      </div>
+    </div>
   );
 };
 
