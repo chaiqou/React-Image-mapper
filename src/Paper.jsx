@@ -10,6 +10,8 @@ const Paper = () => {
     width: 0,
     height: 0,
   });
+  const [selectedPoint, setSelectedPoint] = useState(null);
+
   const currentPathRef = useRef(null);
   const draggablePoints = useRef([]);
 
@@ -18,6 +20,21 @@ const Paper = () => {
   };
 
   const handleStartDrawing = (event) => {
+    if (!drawing) {
+      const hitOptions = {
+        segments: true,
+        tolerance: 50,
+      };
+
+      const hitResult = paper.project.hitTest(event.point, hitOptions);
+
+      if (hitResult && hitResult.type === "segment") {
+        console.log(hitResult.segment.point);
+
+        setSelectedPoint(hitResult.segment.point);
+      }
+    }
+
     if (!currentPathRef.current) {
       currentPathRef.current = new paper.Path({
         closed: true,
@@ -41,6 +58,7 @@ const Paper = () => {
 
   const stopDrawing = () => {
     setDrawing(false);
+    setSelectedPoint(null);
     paper.view.onClick = null;
 
     if (draggablePoints.current.length > 2) {
@@ -50,6 +68,10 @@ const Paper = () => {
     currentPathRef.current.remove();
     currentPathRef.current = null;
     draggablePoints.current = [];
+  };
+
+  const removeSelectedPoint = () => {
+    console.log(selectedPoint);
   };
 
   const addPolygon = (points) => {
@@ -95,7 +117,10 @@ const Paper = () => {
 
       <div className="buttons-container">
         <button onClick={startDrawing}>Start Drawing</button>
-        <button onClick={stopDrawing}>Stop Drawing</button>
+        {drawing && <button onClick={stopDrawing}>Stop Drawing</button>}
+        {selectedPoint && (
+          <button onClick={removeSelectedPoint}>Remove Point</button>
+        )}
       </div>
     </div>
   );
