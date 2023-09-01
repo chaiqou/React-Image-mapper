@@ -1,27 +1,31 @@
-import React from "react";
+import React, { useState, useRef } from "react";
 import paper from "paper";
 
 const Paper = () => {
-  let path;
+  const [drawing, setDrawing] = useState(false);
+  const [paths, setPaths] = useState([]);
+  const currentPathRef = useRef(null);
 
   const handleStartDrawing = (event) => {
-    if (!path) {
-      path = new paper.Path({
+    if (!currentPathRef.current) {
+      currentPathRef.current = new paper.Path({
         strokeColor: "green",
         strokeWidth: 2,
         closed: true,
         fullySelected: true,
       });
     }
-    path.add(event.point);
+    currentPathRef.current.add(event.point);
   };
 
   const startDrawing = () => {
+    setDrawing(true);
     paper.setup("canvas");
     paper.view.onClick = handleStartDrawing;
   };
 
   const stopDrawing = () => {
+    setDrawing(false);
     paper.view.onClick = null;
   };
 
