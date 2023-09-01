@@ -42,6 +42,8 @@ const Paper = () => {
         strokeColor: "#ff0000",
         fillColor: new Color("#5da0d02e"),
         strokeWidth: 5,
+        strokeCap: "round",
+        strokeJoin: "round",
       });
     }
     currentPathRef.current.add(event.point);
