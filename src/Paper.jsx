@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import paper from "paper";
+import paper, { Color } from "paper";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
 
@@ -20,10 +20,12 @@ const Paper = () => {
   const handleStartDrawing = (event) => {
     if (!currentPathRef.current) {
       currentPathRef.current = new paper.Path({
-        strokeColor: "#DE3163",
-        strokeWidth: 2,
         closed: true,
         fullySelected: true,
+        strokeColor: new Color(0, 0, 0),
+        strokeWidth: 4,
+        dashArray: [10, 4],
+        fillColor: new Color("#5da0d02e"),
       });
     }
     currentPathRef.current.add(event.point);
