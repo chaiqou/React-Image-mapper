@@ -76,7 +76,7 @@ const Paper = () => {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
       );
-      draggablePoints.pop();
+      draggablePoints.current.pop();
     }
   };
 
