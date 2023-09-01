@@ -39,10 +39,9 @@ const Paper = () => {
       currentPathRef.current = new paper.Path({
         closed: true,
         fullySelected: true,
-        strokeColor: new Color(0, 0, 0),
-        strokeWidth: 4,
-        dashArray: [10, 4],
+        strokeColor: "#ff0000",
         fillColor: new Color("#5da0d02e"),
+        strokeWidth: 5,
       });
     }
     currentPathRef.current.add(event.point);
@@ -75,6 +74,7 @@ const Paper = () => {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
       );
+      draggablePoints.pop();
     }
   };
 
@@ -110,6 +110,7 @@ const Paper = () => {
           width={imageDimensions.width}
           height={imageDimensions.height}
           style={{
+            cursor: drawing ? "pointer" : "",
             position: "absolute",
             top: "50%",
             left: "50%",
