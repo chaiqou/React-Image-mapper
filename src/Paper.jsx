@@ -70,8 +70,12 @@ const Paper = () => {
     draggablePoints.current = [];
   };
 
-  const removeSelectedPoint = () => {
-    console.log(selectedPoint);
+  const removeLastSegment = () => {
+    if (currentPathRef.current && currentPathRef.current.segments.length > 0) {
+      currentPathRef.current.removeSegment(
+        currentPathRef.current.segments.length - 1
+      );
+    }
   };
 
   const addPolygon = (points) => {
@@ -117,9 +121,11 @@ const Paper = () => {
 
       <div className="buttons-container">
         <button onClick={startDrawing}>Start Drawing</button>
-        {drawing && <button onClick={stopDrawing}>Stop Drawing</button>}
-        {selectedPoint && (
-          <button onClick={removeSelectedPoint}>Remove Point</button>
+        {drawing && (
+          <>
+            <button onClick={stopDrawing}>Stop Drawing</button>{" "}
+            <button onClick={removeLastSegment}>Remove last segment</button>{" "}
+          </>
         )}
       </div>
     </div>
