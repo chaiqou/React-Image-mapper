@@ -11,6 +11,7 @@ const Paper = () => {
     height: 0,
   });
   const currentPathRef = useRef(null);
+  const draggablePoints = useRef([]);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -26,6 +27,7 @@ const Paper = () => {
       });
     }
     currentPathRef.current.add(event.point);
+    draggablePoints.current.push(event.point);
   };
 
   const startDrawing = () => {
@@ -38,6 +40,29 @@ const Paper = () => {
   const stopDrawing = () => {
     setDrawing(false);
     paper.view.onClick = null;
+
+    if (draggablePoints.current.length > 2) {
+      addPolygon(draggablePoints.current);
+    }
+
+    currentPathRef.current.remove();
+    currentPathRef.current = null;
+    draggablePoints.current = [];
+  };
+
+  const addPolygon = (points) => {
+    const newPolygon = {
+      name: `Polygon ${areas.length + 1}`,
+      shape: "poly",
+      coords: points.flatMap((point) => [point.x, point.y]),
+      fillColor: "rgba(229, 0, 0, 0.3)",
+      strokeColor: "rgba(0, 0, 0, 0, 0)",
+      lineWidth: 0,
+      preFillColor: "#5da0d02e",
+      center: [30, 35, 35, 53],
+    };
+
+    setAreas((prevAreas) => [...prevAreas, newPolygon]);
   };
 
   return (
