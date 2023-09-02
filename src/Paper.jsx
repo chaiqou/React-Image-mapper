@@ -14,7 +14,6 @@ const Paper = () => {
 
   const currentPathRef = useRef(null);
   const draggablePoints = useRef([]);
-  const [editMode, setEditMode] = useState(false);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -58,7 +57,7 @@ const Paper = () => {
     paper.view.onClick = handleStartDrawing;
   };
 
-  const stopDrawing = () => {
+  const handleStopDrawing = () => {
     setDrawing(false);
     setSelectedPoint(null);
     paper.view.onClick = null;
@@ -72,7 +71,7 @@ const Paper = () => {
     draggablePoints.current = [];
   };
 
-  const removeLastSegment = () => {
+  const handleRemoveLastSegment = () => {
     if (currentPathRef.current && currentPathRef.current.segments.length > 0) {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
@@ -96,10 +95,7 @@ const Paper = () => {
     setAreas((prevAreas) => [...prevAreas, newPolygon]);
   };
 
-  const movePolygon = () => {
-    setEditMode(true);
-    setDrawing(false);
-
+  const handleEditMove = () => {
     currentPathRef.current.onMouseDrag = function (event) {
       const draggedIndexCoordinants = draggablePoints.findIndex(
         (point) => Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2) < 5 * 2
@@ -139,9 +135,11 @@ const Paper = () => {
         {!drawing && <button onClick={startDrawing}>Start Drawing</button>}
         {drawing && (
           <>
-            <button onClick={stopDrawing}>Stop Drawing</button>{" "}
-            <button onClick={removeLastSegment}>Remove last segment</button>{" "}
-            <button onClick={movePolygon}>Edit Mode</button>
+            <button onClick={handleStopDrawing}>Stop Drawing</button>{" "}
+            <button onClick={handleRemoveLastSegment}>
+              Remove last segment
+            </button>{" "}
+            <button onClick={handleEditMove}>Edit Mode</button>
           </>
         )}
       </div>
