@@ -14,6 +14,7 @@ const Paper = () => {
 
   const currentPathRef = useRef(null);
   const draggablePoints = useRef([]);
+  const [editMode, setEditMode] = useState(false);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -95,6 +96,18 @@ const Paper = () => {
     setAreas((prevAreas) => [...prevAreas, newPolygon]);
   };
 
+  const movePolygon = () => {
+    setEditMode(true);
+    setDrawing(false);
+
+    currentPathRef.current.onMouseDrag = function (event) {
+      const draggedIndexCoordinants = draggablePoints.findIndex(
+        (point) => Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2) < 5 * 2
+      );
+      console.log(draggedIndexCoordinants);
+    };
+  };
+
   return (
     <div className="image-mapper-wrapper">
       <div className="image-mapper-container">
@@ -123,11 +136,12 @@ const Paper = () => {
       </div>
 
       <div className="buttons-container">
-        <button onClick={startDrawing}>Start Drawing</button>
+        {!drawing && <button onClick={startDrawing}>Start Drawing</button>}
         {drawing && (
           <>
             <button onClick={stopDrawing}>Stop Drawing</button>{" "}
             <button onClick={removeLastSegment}>Remove last segment</button>{" "}
+            <button onClick={movePolygon}>Edit Mode</button>
           </>
         )}
       </div>
