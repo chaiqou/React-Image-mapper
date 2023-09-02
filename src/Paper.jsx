@@ -6,13 +6,13 @@ import "./app.css";
 const Paper = () => {
   const [drawing, setDrawing] = useState(false);
   const [areas, setAreas] = useState([]);
+  const [draggablePoints, setDraggablePoints] = useState([]);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
 
   const currentPathRef = useRef(null);
-  const draggablePoints = useRef([]);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -31,7 +31,7 @@ const Paper = () => {
       });
     }
     currentPathRef.current.add(event.point);
-    draggablePoints.current.push(event.point);
+    draggablePoints.push(event.point);
   };
 
   const startDrawing = () => {
@@ -45,13 +45,12 @@ const Paper = () => {
     setDrawing(false);
     paper.view.onClick = null;
 
-    if (draggablePoints.current.length > 2) {
-      addPolygon(draggablePoints.current);
+    if (draggablePoints.length > 2) {
+      addPolygon(draggablePoints);
     }
 
     currentPathRef.current.remove();
     currentPathRef.current = null;
-    draggablePoints.current = [];
   };
 
   const handleRemoveLastSegment = () => {
@@ -59,7 +58,7 @@ const Paper = () => {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
       );
-      draggablePoints.current.pop();
+      draggablePoints.pop();
     }
   };
 
