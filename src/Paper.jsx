@@ -95,7 +95,7 @@ const Paper = () => {
           width={imageDimensions.width}
           height={imageDimensions.height}
           style={{
-            cursor: drawing ? "pointer" : "",
+            cursor: isDrawing ? "pointer" : "",
             position: "absolute",
             top: "50%",
             left: "50%",
@@ -106,8 +106,8 @@ const Paper = () => {
       </div>
 
       <div className="buttons-container">
-        {!drawing && <button onClick={startDrawing}>Start Drawing</button>}
-        {drawing && (
+        {!isDrawing && <button onClick={startDrawing}>Start Drawing</button>}
+        {isDrawing && (
           <>
             <button onClick={handleStopDrawing}>Stop Drawing</button>{" "}
             <button onClick={handleRemoveLastSegment}>
