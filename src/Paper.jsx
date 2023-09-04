@@ -4,7 +4,7 @@ import ImageMapper from "react-img-mapper";
 import "./app.css";
 
 const Paper = () => {
-  const [drawing, setDrawing] = useState(false);
+  const [isDrawing, setIsDrawing] = useState(false);
   const [areas, setAreas] = useState([]);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
@@ -12,7 +12,7 @@ const Paper = () => {
   });
 
   const currentPathRef = useRef(null);
-  const draggablePoints = useRef([]);
+  const draggablePointsRef = useRef([]);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -31,27 +31,27 @@ const Paper = () => {
       });
     }
     currentPathRef.current.add(event.point);
-    draggablePoints.current.push(event.point);
+    draggablePointsRef.current.push(event.point);
   };
 
   const startDrawing = () => {
     paper.setup("canvas");
 
-    setDrawing(true);
+    setIsDrawing(true);
     paper.view.onClick = handleStartDrawing;
   };
 
   const handleStopDrawing = () => {
-    setDrawing(false);
+    setIsDrawing(false);
     paper.view.onClick = null;
 
-    if (draggablePoints.current.length > 2) {
-      addPolygon(draggablePoints.current);
+    if (draggablePointsRef.current.length > 2) {
+      addPolygon(draggablePointsRef.current);
     }
 
     currentPathRef.current.remove();
     currentPathRef.current = null;
-    draggablePoints.current = [];
+    draggablePointsRef.current = [];
   };
 
   const handleRemoveLastSegment = () => {
@@ -59,7 +59,7 @@ const Paper = () => {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
       );
-      draggablePoints.current.pop();
+      draggablePointsRef.current.pop();
     }
   };
 
@@ -76,15 +76,6 @@ const Paper = () => {
     };
 
     setAreas((prevAreas) => [...prevAreas, newPolygon]);
-  };
-
-  const handleEditMove = () => {
-    currentPathRef.current.onMouseDrag = function (event) {
-      const draggedIndexCoordinants = draggablePoints.findIndex(
-        (point) => Math.sqrt((x - point.x) ** 2 + (y - point.y) ** 2) < 5 * 2
-      );
-      console.log(draggedIndexCoordinants);
-    };
   };
 
   return (
@@ -122,7 +113,6 @@ const Paper = () => {
             <button onClick={handleRemoveLastSegment}>
               Remove last segment
             </button>{" "}
-            <button onClick={handleEditMove}>Edit Mode</button>
           </>
         )}
       </div>
