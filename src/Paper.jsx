@@ -97,11 +97,6 @@ const Paper = () => {
     setIsDrawing(false);
   };
 
-  const handleMouseDownOnCanvas = (event) => {
-    if (!isDrawing && editMode) {
-    }
-  };
-
   return (
     <div className="image-mapper-wrapper">
       <div className="image-mapper-container">
@@ -116,7 +111,6 @@ const Paper = () => {
 
         <canvas
           id="canvas"
-          onMouseDown={handleMouseDownOnCanvas}
           width={imageDimensions.width}
           height={imageDimensions.height}
           style={{
