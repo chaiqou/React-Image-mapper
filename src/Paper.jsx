@@ -11,25 +11,37 @@ const Paper = () => {
     height: 0,
   });
   const [editMode, setEditMode] = useState(false);
+  const [selectedPoint, setSelectedPoint] = useState(-1);
 
   const currentPathRef = useRef(null);
   const draggablePointsRef = useRef([]);
-  const selectedPointIndexRef = useRef(-1);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
   };
 
   const handleStartDrawing = (event) => {
+    if (!isDrawing) {
+      const hitOptions = {
+        segments: true,
+        tolerance: 50,
+      };
+
+      const hitResult = paper.project.hitTest(event.point, hitOptions);
+
+      if (hitResult && hitResult.type === "segment") {
+        console.log(hitResult.segment.point);
+
+        setSelectedPoint(hitResult.segment.point);
+      }
+    }
+
     if (!currentPathRef.current) {
       currentPathRef.current = new paper.Path({
         closed: true,
         fullySelected: true,
         strokeColor: "#ff0000",
         fillColor: new Color("#5da0d02e"),
-        strokeWidth: 5,
-        strokeCap: "round",
-        strokeJoin: "round",
       });
     }
     currentPathRef.current.add(event.point);
