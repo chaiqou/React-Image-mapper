@@ -127,6 +127,7 @@ const Paper = () => {
             transform: "translate(-50%, -50%)",
             zIndex: 2,
           }}
+          resize="true"
         />
       </div>
 
