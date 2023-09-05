@@ -1,5 +1,5 @@
 import React, { useState, useRef } from "react";
-import paper, { Color } from "paper";
+import paper, { Color, Path } from "paper";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
 
@@ -21,23 +21,22 @@ const Paper = () => {
   };
 
   const handleStartDrawing = (event) => {
-    if (!isDrawing) {
-      const hitOptions = {
-        segments: true,
-        tolerance: 50,
-      };
+    const hitOptions = {
+      segments: true,
+      tolerance: 50,
+    };
 
-      const hitResult = paper.project.hitTest(event.point, hitOptions);
+    // Detect which point is clicked (selected)
+    const hitResult = paper.project.hitTest(event.point, hitOptions);
 
-      if (hitResult && hitResult.type === "segment") {
-        console.log(hitResult.segment.point);
+    if (hitResult && hitResult.type === "segment") {
+      console.log(hitResult.segment.point);
 
-        setSelectedPoint(hitResult.segment.point);
-      }
+      setSelectedPoint(hitResult.segment.point);
     }
 
     if (!currentPathRef.current) {
-      currentPathRef.current = new paper.Path({
+      currentPathRef.current = new Path({
         closed: true,
         fullySelected: true,
         strokeColor: "#ff0000",
