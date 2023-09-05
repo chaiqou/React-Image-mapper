@@ -21,6 +21,10 @@ const Paper = () => {
   };
 
   const handleStartDrawing = (event) => {
+    if (editMode) {
+      return;
+    }
+
     const hitOptions = {
       segments: true,
       tolerance: 50,
@@ -49,9 +53,11 @@ const Paper = () => {
 
   const startDrawing = () => {
     paper.setup("canvas");
-
     setIsDrawing(true);
-    paper.view.onClick = handleStartDrawing;
+
+    if (!editMode) {
+      paper.view.onClick = handleStartDrawing;
+    }
   };
 
   const handleStopDrawing = () => {
@@ -92,7 +98,15 @@ const Paper = () => {
   };
 
   const handleToggleEditMode = () => {
-    setEditMode(!editMode);
+    setEditMode((prevEditMode) => {
+      console.log(!prevEditMode);
+      if (!prevEditMode && !isDrawing) {
+        paper.view.onClick = handleStartDrawing;
+      } else {
+        paper.view.onClick = null;
+      }
+      return !prevEditMode;
+    });
     setIsDrawing(false);
   };
 
