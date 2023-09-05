@@ -10,9 +10,11 @@ const Paper = () => {
     width: 0,
     height: 0,
   });
+  const [editMode, setEditMode] = useState(false);
 
   const currentPathRef = useRef(null);
   const draggablePointsRef = useRef([]);
+  const selectedPointIndexRef = useRef(-1);
 
   const handleImageLoad = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -78,6 +80,16 @@ const Paper = () => {
     setAreas((prevAreas) => [...prevAreas, newPolygon]);
   };
 
+  const handleToggleEditMode = () => {
+    setEditMode(!editMode);
+    setIsDrawing(false);
+  };
+
+  const handleMouseDownOnCanvas = (event) => {
+    if (!isDrawing && editMode) {
+    }
+  };
+
   return (
     <div className="image-mapper-wrapper">
       <div className="image-mapper-container">
@@ -92,6 +104,7 @@ const Paper = () => {
 
         <canvas
           id="canvas"
+          onMouseDown={handleMouseDownOnCanvas}
           width={imageDimensions.width}
           height={imageDimensions.height}
           style={{
@@ -106,15 +119,20 @@ const Paper = () => {
       </div>
 
       <div className="buttons-container">
-        {!isDrawing && <button onClick={startDrawing}>Start Drawing</button>}
-        {isDrawing && (
+        {!isDrawing && !editMode && (
+          <button onClick={startDrawing}>Start Drawing</button>
+        )}
+        {isDrawing || editMode ? (
           <>
             <button onClick={handleStopDrawing}>Stop Drawing</button>{" "}
             <button onClick={handleRemoveLastSegment}>
               Remove last segment
             </button>{" "}
+            <button onClick={handleToggleEditMode}>
+              {editMode ? "Exit edit mode" : "Start edit mode"}
+            </button>
           </>
-        )}
+        ) : null}
       </div>
     </div>
   );
