@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import paper, { Color, Path } from "paper";
 import ImageMapper from "react-img-mapper";
 import "./app.css";
@@ -20,23 +20,37 @@ const Paper = () => {
     setImageDimensions({ width: image.width, height: image.height });
   };
 
+  const calculateSelectedPoint = (event) => {
+    if (editMode) {
+      const hitOptions = {
+        segments: true,
+        tolerance: 50,
+      };
+
+      // Detect which point is clicked (selected)
+      const hitResult = paper.project.hitTest(event.point, hitOptions);
+
+      if (hitResult && hitResult.type === "segment") {
+        console.log(hitResult.segment.point);
+
+        setSelectedPoint(hitResult.segment.point);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (paper.project) {
+      if (editMode) {
+        paper.view.onClick = calculateSelectedPoint;
+      } else {
+        paper.view.onClick = null;
+      }
+    }
+  }, [editMode]);
+
   const handleStartDrawing = (event) => {
     if (editMode) {
       return;
-    }
-
-    const hitOptions = {
-      segments: true,
-      tolerance: 50,
-    };
-
-    // Detect which point is clicked (selected)
-    const hitResult = paper.project.hitTest(event.point, hitOptions);
-
-    if (hitResult && hitResult.type === "segment") {
-      console.log(hitResult.segment.point);
-
-      setSelectedPoint(hitResult.segment.point);
     }
 
     if (!currentPathRef.current) {
