@@ -8,6 +8,7 @@ const Paper = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [areas, setAreas] = useState([]);
   const [selectedPoint, setSelectedPoint] = useState(-1);
+  const [draggablePoints, setDraggablePoints] = useState([]); // Use state for draggable points
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
@@ -18,7 +19,6 @@ const Paper = () => {
   });
 
   const currentPathRef = useRef(null);
-  const draggablePointsRef = useRef([]);
 
   const handleImageCoordinants = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
@@ -62,7 +62,7 @@ const Paper = () => {
       });
     }
     currentPathRef.current.add(event.point);
-    draggablePointsRef.current.push(event.point);
+    setDraggablePoints((prevPoints) => [...prevPoints, event.point]);
   };
 
   const startDrawing = () => {
@@ -78,13 +78,13 @@ const Paper = () => {
     setIsDrawing(false);
     paper.view.onClick = null;
 
-    if (draggablePointsRef.current.length > 2) {
-      addPolygon(draggablePointsRef.current);
+    if (draggablePoints.length > 2) {
+      addPolygon(draggablePoints);
     }
 
     currentPathRef.current.remove();
     currentPathRef.current = null;
-    draggablePointsRef.current = [];
+    setDraggablePoints([]);
   };
 
   const removeLastSegment = () => {
@@ -92,7 +92,12 @@ const Paper = () => {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
       );
-      draggablePointsRef.current.pop();
+
+      setDraggablePoints((prevPoints) => {
+        const updatedPoints = [...prevPoints];
+        updatedPoints.pop();
+        return updatedPoints;
+      });
     }
   };
 
