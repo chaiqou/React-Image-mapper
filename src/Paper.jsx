@@ -12,7 +12,10 @@ const Paper = () => {
   });
   const [editMode, setEditMode] = useState(false);
   const [selectedPoint, setSelectedPoint] = useState(-1);
-
+  const [selectedPointCoords, setSelectedPointCoords] = useState({
+    x: 0,
+    y: 0,
+  });
   const currentPathRef = useRef(null);
   const draggablePointsRef = useRef([]);
 
@@ -31,10 +34,17 @@ const Paper = () => {
       const hitResult = paper.project.hitTest(event.point, hitOptions);
 
       if (hitResult && hitResult.type === "segment") {
-        console.log(hitResult.segment.point);
-
-        setSelectedPoint(hitResult.segment.point);
+        setSelectedPoint(hitResult.segment);
+        setSelectedPointCoords(hitResult.segment.point);
       }
+    }
+  };
+
+  const handleDragPoint = (event) => {
+    if (editMode && selectedPointCoords) {
+      console.log(event.point.x);
+      selectedPointCoords.x = event.point.x;
+      selectedPointCoords.y = event.point.y;
     }
   };
 
@@ -47,6 +57,16 @@ const Paper = () => {
       }
     }
   }, [editMode]);
+
+  useEffect(() => {
+    if (paper.project) {
+      if (editMode && selectedPoint) {
+        paper.view.onMouseMove = handleDragPoint;
+      } else {
+        paper.view.onMouseMove = null;
+      }
+    }
+  }, [editMode, selectedPoint]);
 
   const handleStartDrawing = (event) => {
     if (editMode) {
