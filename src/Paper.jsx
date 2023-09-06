@@ -5,26 +5,27 @@ import "./app.css";
 
 const Paper = () => {
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [areas, setAreas] = useState([]);
+  const [selectedPoint, setSelectedPoint] = useState(-1);
   const [imageDimensions, setImageDimensions] = useState({
     width: 0,
     height: 0,
   });
-  const [editMode, setEditMode] = useState(false);
-  const [selectedPoint, setSelectedPoint] = useState(-1);
   const [selectedPointCoords, setSelectedPointCoords] = useState({
     x: 0,
     y: 0,
   });
+
   const currentPathRef = useRef(null);
   const draggablePointsRef = useRef([]);
 
-  const handleImageLoad = (image) => {
+  const handleImageCoordinants = (image) => {
     setImageDimensions({ width: image.width, height: image.height });
   };
 
-  const calculateSelectedPoint = (event) => {
-    if (editMode) {
+  const calculateSelectedPointCoordinants = (event) => {
+    if (isEditMode) {
       const hitOptions = {
         segments: true,
         tolerance: 50,
@@ -41,41 +42,14 @@ const Paper = () => {
   };
 
   const handleDragPoint = (event) => {
-    if (editMode && selectedPointCoords) {
-      console.log(event.point.x);
+    if (isEditMode && selectedPointCoords) {
       selectedPointCoords.x = event.point.x;
       selectedPointCoords.y = event.point.y;
     }
   };
 
-  useEffect(() => {
-    if (paper.project) {
-      if (editMode) {
-        paper.view.onClick = calculateSelectedPoint;
-      } else {
-        paper.view.onClick = null;
-      }
-    }
-  }, [editMode]);
-
-  useEffect(() => {
-    if (paper.project) {
-      if (editMode && selectedPoint) {
-        paper.view.onMouseMove = handleDragPoint;
-      } else {
-        paper.view.onMouseMove = null;
-      }
-
-      paper.view.onMouseUp = () => {
-        if (editMode) {
-          paper.view.onMouseMove = null;
-        }
-      };
-    }
-  }, [editMode, selectedPoint]);
-
   const handleStartDrawing = (event) => {
-    if (editMode) {
+    if (isEditMode) {
       return;
     }
 
@@ -95,7 +69,7 @@ const Paper = () => {
     paper.setup("canvas");
     setIsDrawing(true);
 
-    if (!editMode) {
+    if (!isEditMode) {
       paper.view.onClick = handleStartDrawing;
     }
   };
@@ -113,7 +87,7 @@ const Paper = () => {
     draggablePointsRef.current = [];
   };
 
-  const handleRemoveLastSegment = () => {
+  const removeLastSegment = () => {
     if (currentPathRef.current && currentPathRef.current.segments.length > 0) {
       currentPathRef.current.removeSegment(
         currentPathRef.current.segments.length - 1
@@ -137,9 +111,8 @@ const Paper = () => {
     setAreas((prevAreas) => [...prevAreas, newPolygon]);
   };
 
-  const handleToggleEditMode = () => {
-    setEditMode((prevEditMode) => {
-      console.log(!prevEditMode);
+  const toggleEditMode = () => {
+    setIsEditMode((prevEditMode) => {
       if (!prevEditMode && !isDrawing) {
         paper.view.onClick = handleStartDrawing;
       } else {
@@ -150,6 +123,32 @@ const Paper = () => {
     setIsDrawing(false);
   };
 
+  useEffect(() => {
+    if (paper.project) {
+      if (isEditMode) {
+        paper.view.onClick = calculateSelectedPointCoordinants;
+      } else {
+        paper.view.onClick = null;
+      }
+    }
+  }, [isEditMode]);
+
+  useEffect(() => {
+    if (paper.project) {
+      if (isEditMode && selectedPoint) {
+        paper.view.onMouseMove = handleDragPoint;
+      } else {
+        paper.view.onMouseMove = null;
+      }
+
+      paper.view.onMouseUp = () => {
+        if (isEditMode) {
+          paper.view.onMouseMove = null;
+        }
+      };
+    }
+  }, [isEditMode, selectedPoint]);
+
   return (
     <div className="image-mapper-wrapper">
       <div className="image-mapper-container">
@@ -159,7 +158,7 @@ const Paper = () => {
             name: "Redberry",
             areas: [...areas],
           }}
-          onLoad={handleImageLoad}
+          onLoad={handleImageCoordinants}
         />
 
         <canvas
@@ -179,17 +178,15 @@ const Paper = () => {
       </div>
 
       <div className="buttons-container">
-        {!isDrawing && !editMode && (
+        {!isDrawing && !isEditMode && (
           <button onClick={startDrawing}>Start Drawing</button>
         )}
-        {isDrawing || editMode ? (
+        {isDrawing || isEditMode ? (
           <>
             <button onClick={handleStopDrawing}>Stop Drawing</button>{" "}
-            <button onClick={handleRemoveLastSegment}>
-              Remove last segment
-            </button>{" "}
-            <button onClick={handleToggleEditMode}>
-              {editMode ? "Exit edit mode" : "Start edit mode"}
+            <button onClick={removeLastSegment}>Remove last segment</button>{" "}
+            <button onClick={toggleEditMode}>
+              {isEditMode ? "Exit edit mode" : "Start edit mode"}
             </button>
           </>
         ) : null}
