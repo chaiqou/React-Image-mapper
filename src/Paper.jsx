@@ -65,6 +65,12 @@ const Paper = () => {
       } else {
         paper.view.onMouseMove = null;
       }
+
+      paper.view.onMouseUp = () => {
+        if (editMode) {
+          paper.view.onMouseMove = null;
+        }
+      };
     }
   }, [editMode, selectedPoint]);
 
