@@ -85,8 +85,8 @@ const KonvaPage = () => {
         />
         {points.map((point, index) => {
           const width = 6;
-          const x = point[0] - width / 2;
-          const y = point[1] - width / 2;
+          const x = point[0] - width / 2.5;
+          const y = point[1] - width / 2.5;
           const startPointAttr =
             index === 0
               ? {
@@ -103,7 +103,7 @@ const KonvaPage = () => {
               width={width}
               height={width}
               fill="white"
-              stroke="black"
+              stroke="red"
               strokeWidth={3}
               onDragStart={handleDragStartPoint}
               onDragMove={handleDragMovePoint}
