@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Stage, Layer, Rect, Line, Image } from "react-konva";
+import { Stage, Layer, Rect, Line, Image, Group } from "react-konva";
 
 const KonvaPage = () => {
   const [points, setPoints] = useState([]);
@@ -10,6 +10,8 @@ const KonvaPage = () => {
     imageObj: new window.Image(),
     imageUrl: "../src/assets/apartment.png",
   });
+  const [isDrawing, setIsDrawing] = useState(false);
+
   const stageRef = useRef();
 
   useEffect(() => {
@@ -32,7 +34,7 @@ const KonvaPage = () => {
 
     if (isMouseOverStartPoint && points.length >= 3) {
       setIsFinished(true);
-    } else {
+    } else if (isDrawing) {
       setPoints([...points, mousePos]);
     }
   };
@@ -71,63 +73,74 @@ const KonvaPage = () => {
     console.log("end", event);
   };
 
+  const toggleDrawingMode = () => {
+    setIsDrawing(!isDrawing);
+  };
+
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
   const flattenedPoints = points
     .concat(isFinished ? [] : cursorMousePosition)
     .reduce((a, b) => a.concat(b), []);
 
   return (
-    <Stage
-      width={window.innerWidth}
-      height={window.innerHeight}
-      onMouseDown={handleClick}
-      onMouseMove={handleMouseMove}
-      ref={stageRef}
-    >
-      <Layer>
-        <Image
-          image={image.imageObj}
-          width={window.innerWidth}
-          height={window.innerHeight}
-        />
-        <Line
-          points={flattenedPoints}
-          stroke="black"
-          strokeWidth={5}
-          closed={isFinished}
-        />
-        {points.map((point, index) => {
-          const width = 6;
-          const x = point[0] - width / 2.5;
-          const y = point[1] - width / 2.5;
-          const startPointerAttributes =
-            index === 0
-              ? {
-                  hitStrokeWidth: 12,
-                  onMouseOver: handleMouseOverStartPoint,
-                  onMouseOut: handleMouseOutStartPoint,
-                }
-              : null;
-          return (
-            <Rect
-              key={index}
-              x={x}
-              y={y}
-              width={width}
-              height={width}
-              fill="white"
-              stroke="red"
-              strokeWidth={3}
-              onDragStart={handleDragStartPoint}
-              onDragMove={handleDragMovePoint}
-              onDragEnd={handleDragEndPoint}
-              draggable
-              {...startPointerAttributes}
+    <>
+      <button onClick={toggleDrawingMode}>
+        {isDrawing ? "Stop Drawing" : "Start Drawing"}
+      </button>
+      <Stage
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onMouseDown={handleClick}
+        onMouseMove={handleMouseMove}
+        ref={stageRef}
+      >
+        <Layer>
+          <Image
+            image={image.imageObj}
+            width={window.innerWidth}
+            height={window.innerHeight}
+          />
+          <Group>
+            <Line
+              points={flattenedPoints}
+              stroke="black"
+              strokeWidth={5}
+              closed={isFinished}
             />
-          );
-        })}
-      </Layer>
-    </Stage>
+            {points.map((point, index) => {
+              const width = 6;
+              const x = point[0] - width / 2.5;
+              const y = point[1] - width / 2.5;
+              const startPointerAttributes =
+                index === 0
+                  ? {
+                      hitStrokeWidth: 12,
+                      onMouseOver: handleMouseOverStartPoint,
+                      onMouseOut: handleMouseOutStartPoint,
+                    }
+                  : null;
+              return (
+                <Rect
+                  key={index}
+                  x={x}
+                  y={y}
+                  width={width}
+                  height={width}
+                  fill="white"
+                  stroke="red"
+                  strokeWidth={3}
+                  onDragStart={handleDragStartPoint}
+                  onDragMove={handleDragMovePoint}
+                  onDragEnd={handleDragEndPoint}
+                  draggable
+                  {...startPointerAttributes}
+                />
+              );
+            })}
+          </Group>
+        </Layer>
+      </Stage>
+    </>
   );
 };
 
