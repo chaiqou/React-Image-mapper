@@ -11,6 +11,7 @@ const KonvaPage = () => {
     imageUrl: "../src/assets/apartment.png",
   });
   const [isDrawing, setIsDrawing] = useState(false);
+  const [floors, setFloors] = useState([]);
 
   const stageRef = useRef();
 
@@ -29,6 +30,7 @@ const KonvaPage = () => {
     const mousePos = getMousePosition();
 
     if (isFinished) {
+      setFloors([...floors, points]);
       return;
     }
 
@@ -75,6 +77,7 @@ const KonvaPage = () => {
 
   const toggleDrawingMode = () => {
     setIsDrawing(!isDrawing);
+    setPoints([]);
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
@@ -138,6 +141,16 @@ const KonvaPage = () => {
                 />
               );
             })}
+            {!isDrawing &&
+              floors.map((floorPoints, index) => (
+                <Line
+                  key={`floor-${index}`}
+                  points={floorPoints.reduce((a, b) => a.concat(b), [])}
+                  fill="blue"
+                  opacity={0.5}
+                  closed={true}
+                />
+              ))}
           </Group>
         </Layer>
       </Stage>
