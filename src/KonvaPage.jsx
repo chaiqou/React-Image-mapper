@@ -38,8 +38,8 @@ const KonvaPage = () => {
   };
 
   const handleMouseMove = (event) => {
-    const mousePos = getMousePosition();
-    setCursorMousePosition(mousePos);
+    const mousePosition = getMousePosition();
+    setCursorMousePosition(mousePosition);
   };
 
   const handleMouseOverStartPoint = (event) => {
@@ -59,11 +59,11 @@ const KonvaPage = () => {
 
   const handleDragMovePoint = (event) => {
     const index = event.target.index - 1;
-    const pos = [event.target.attrs.x, event.target.attrs.y];
-    setPoints((prevPoints) => [
-      ...prevPoints.slice(0, index),
-      pos,
-      ...prevPoints.slice(index + 1),
+    const position = [event.target.attrs.x, event.target.attrs.y];
+    setPoints((previousPoints) => [
+      ...previousPoints.slice(0, index),
+      position,
+      ...previousPoints.slice(index + 1),
     ]);
   };
 
@@ -100,7 +100,7 @@ const KonvaPage = () => {
           const width = 6;
           const x = point[0] - width / 2.5;
           const y = point[1] - width / 2.5;
-          const startPointAttr =
+          const startPointerAttributes =
             index === 0
               ? {
                   hitStrokeWidth: 12,
@@ -122,7 +122,7 @@ const KonvaPage = () => {
               onDragMove={handleDragMovePoint}
               onDragEnd={handleDragEndPoint}
               draggable
-              {...startPointAttr}
+              {...startPointerAttributes}
             />
           );
         })}
