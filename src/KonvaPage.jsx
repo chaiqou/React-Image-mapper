@@ -1,12 +1,20 @@
-import React, { useState, useRef } from "react";
-import { Stage, Layer, Rect, Line } from "react-konva";
+import React, { useState, useRef, useEffect } from "react";
+import { Stage, Layer, Rect, Line, Image } from "react-konva";
 
 const KonvaPage = () => {
   const [points, setPoints] = useState([]);
   const [cursorMousePosition, setCursorMousePosition] = useState([0, 0]);
   const [isMouseOverStartPoint, setIsMouseOverStartPoint] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [image, setImage] = useState({
+    imageObj: new window.Image(),
+    imageUrl: "../src/assets/apartment.png",
+  });
   const stageRef = useRef();
+
+  useEffect(() => {
+    image.imageObj.src = image.imageUrl;
+  }, []);
 
   const getMousePosition = () => {
     return [
@@ -77,6 +85,11 @@ const KonvaPage = () => {
       ref={stageRef}
     >
       <Layer>
+        <Image
+          image={image.imageObj}
+          width={window.innerWidth}
+          height={window.innerHeight}
+        />
         <Line
           points={flattenedPoints}
           stroke="black"
