@@ -87,6 +87,7 @@ const KonvaPage = () => {
       <button onClick={toggleDrawingMode}>
         {isDrawing ? "Stop Drawing" : "Start Drawing"}
       </button>
+      <h1>{flattenedPoints}</h1>
       <Stage
         width={window.innerWidth}
         height={window.innerHeight}
@@ -132,7 +133,7 @@ const KonvaPage = () => {
                   onDragStart={handleDragStartPoint}
                   onDragMove={handleDragMovePoint}
                   onDragEnd={handleDragEndPoint}
-                  draggable
+                  draggable={isDrawing}
                   {...startPointerAttributes}
                 />
               );
