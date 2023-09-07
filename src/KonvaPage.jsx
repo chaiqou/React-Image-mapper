@@ -97,6 +97,7 @@ const KonvaPage = () => {
         onMouseDown={handleClick}
         onMouseMove={handleMouseMove}
         ref={stageRef}
+        style={{ cursor: isDrawing ? "crosshair" : "default" }}
       >
         <Layer>
           <Image
