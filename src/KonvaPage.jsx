@@ -109,6 +109,8 @@ const KonvaPage = () => {
             <Line
               points={flattenedPoints}
               stroke="black"
+              // tension={3} //curvy lines default 0
+              lineJoin="round"
               strokeWidth={5}
               closed={isFinished}
             />
@@ -148,6 +150,8 @@ const KonvaPage = () => {
                   key={`floor-${index}`}
                   points={floorPoints.reduce((a, b) => a.concat(b), [])}
                   fill="blue"
+                  // tension={3}
+                  lineJoin="round"
                   opacity={0.5}
                   closed={true}
                 />
