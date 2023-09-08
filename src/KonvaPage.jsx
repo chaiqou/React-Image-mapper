@@ -30,11 +30,6 @@ const KonvaPage = () => {
   const handleClick = () => {
     const mousePos = getMousePosition();
 
-    if (isFinished) {
-      setFloors([...floors, points]);
-      return;
-    }
-
     if (isMouseOverStartPoint && points.length >= 3) {
       setIsFinished(true);
     } else if (isDrawing) {
@@ -71,13 +66,17 @@ const KonvaPage = () => {
   const toggleDrawingMode = () => {
     setIsDrawing(!isDrawing);
     setIsEditing(false);
-    setFloors([...floors, points]);
+    if (points.length > 0) {
+      setFloors([...floors, points]);
+    }
     setPoints([]);
   };
 
   const toggleEditingMode = () => {
     setIsEditing(!isEditing);
-    setFloors([points]);
+    if (points.length > 0) {
+      setFloors([points]);
+    }
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
@@ -146,17 +145,16 @@ const KonvaPage = () => {
                 />
               );
             })}
-            {!isDrawing &&
-              floors.map((floorPoints, index) => (
-                <Line
-                  key={`floor-${index}`}
-                  points={floorPoints.reduce((a, b) => a.concat(b), [])}
-                  fill="blue"
-                  lineJoin="round"
-                  opacity={0.5}
-                  closed={true}
-                />
-              ))}
+            {floors.map((floorPoints, index) => (
+              <Line
+                key={`floor-${index}`}
+                points={floorPoints.reduce((a, b) => a.concat(b), [])}
+                fill="blue"
+                lineJoin="round"
+                opacity={0.5}
+                closed={true}
+              />
+            ))}
           </Group>
         </Layer>
       </Stage>
