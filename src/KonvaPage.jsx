@@ -6,7 +6,7 @@ const KonvaPage = () => {
   const [cursorMousePosition, setCursorMousePosition] = useState([0, 0]);
   const [isMouseOverStartPoint, setIsMouseOverStartPoint] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
-  const [image, setImage] = useState({
+  const [image] = useState({
     imageObj: new window.Image(),
     imageUrl: "../src/assets/apartment.png",
   });
@@ -27,7 +27,7 @@ const KonvaPage = () => {
     ];
   };
 
-  const handleClick = (event) => {
+  const handleClick = () => {
     const mousePos = getMousePosition();
 
     if (isFinished) {
@@ -42,7 +42,7 @@ const KonvaPage = () => {
     }
   };
 
-  const handleMouseMove = (event) => {
+  const handleMouseMove = () => {
     const mousePosition = getMousePosition();
     setCursorMousePosition(mousePosition);
   };
@@ -58,10 +58,6 @@ const KonvaPage = () => {
     setIsMouseOverStartPoint(false);
   };
 
-  const handleDragStartPoint = (event) => {
-    console.log("start", event);
-  };
-
   const handleDragMovePoint = (event) => {
     const index = event.target.index - 1;
     const position = [event.target.attrs.x, event.target.attrs.y];
@@ -70,10 +66,6 @@ const KonvaPage = () => {
       position,
       ...previousPoints.slice(index + 1),
     ]);
-  };
-
-  const handleDragEndPoint = (event) => {
-    console.log("end", event);
   };
 
   const toggleDrawingMode = () => {
@@ -122,7 +114,6 @@ const KonvaPage = () => {
             <Line
               points={flattenedPoints}
               stroke="black"
-              // tension={1} //curvy lines default 0
               lineJoin="round"
               strokeWidth={5}
               closed={isFinished}
@@ -146,12 +137,10 @@ const KonvaPage = () => {
                   y={y}
                   width={width}
                   height={width}
-                  fill="white"
+                  fill="red"
                   stroke="red"
                   strokeWidth={3}
-                  onDragStart={handleDragStartPoint}
                   onDragMove={handleDragMovePoint}
-                  onDragEnd={handleDragEndPoint}
                   draggable={isEditing}
                   {...startPointerAttributes}
                 />
@@ -163,7 +152,6 @@ const KonvaPage = () => {
                   key={`floor-${index}`}
                   points={floorPoints.reduce((a, b) => a.concat(b), [])}
                   fill="blue"
-                  // tension={1}
                   lineJoin="round"
                   opacity={0.5}
                   closed={true}
