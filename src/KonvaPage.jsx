@@ -79,7 +79,7 @@ const KonvaPage = () => {
   const toggleDrawingMode = () => {
     setIsDrawing(!isDrawing);
     setIsEditing(false);
-    setFloors([points]);
+    setFloors([...floors, points]);
     setPoints([]);
   };
 
