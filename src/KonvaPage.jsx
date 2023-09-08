@@ -11,6 +11,7 @@ const KonvaPage = () => {
     imageUrl: "../src/assets/apartment.png",
   });
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
   const [floors, setFloors] = useState([]);
 
   const stageRef = useRef();
@@ -77,7 +78,12 @@ const KonvaPage = () => {
 
   const toggleDrawingMode = () => {
     setIsDrawing(!isDrawing);
+    setIsEditing(false);
     setPoints([]);
+  };
+
+  const toggleEditingMode = () => {
+    setIsEditing(!isEditing);
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
@@ -89,6 +95,9 @@ const KonvaPage = () => {
     <>
       <button onClick={toggleDrawingMode}>
         {isDrawing ? "Stop Drawing" : "Start Drawing"}
+      </button>
+      <button onClick={toggleEditingMode}>
+        {isEditing ? "Stop Editing" : "Start Editing"}
       </button>
       <h1>{flattenedPoints}</h1>
       <Stage
