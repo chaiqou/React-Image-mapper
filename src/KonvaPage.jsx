@@ -84,6 +84,7 @@ const KonvaPage = () => {
 
   const toggleEditingMode = () => {
     setIsEditing(!isEditing);
+    setFloors([points]);
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
@@ -120,7 +121,7 @@ const KonvaPage = () => {
             <Line
               points={flattenedPoints}
               stroke="black"
-              // tension={3} //curvy lines default 0
+              // tension={1} //curvy lines default 0
               lineJoin="round"
               strokeWidth={5}
               closed={isFinished}
@@ -161,7 +162,7 @@ const KonvaPage = () => {
                   key={`floor-${index}`}
                   points={floorPoints.reduce((a, b) => a.concat(b), [])}
                   fill="blue"
-                  // tension={3}
+                  // tension={1}
                   lineJoin="round"
                   opacity={0.5}
                   closed={true}
