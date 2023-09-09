@@ -79,12 +79,8 @@ const KonvaPage = () => {
   const toggleEditingMode = () => {
     setIsEditing(!isEditing);
 
-    if (isEditing) {
-      setPoints([]);
-    }
-
-    if (points.length > 0) {
-      setFloors([points]);
+    if (!isEditing && points.length > 0) {
+      setFloors((prevFloors) => [...prevFloors, points]);
     }
   };
 
@@ -103,7 +99,6 @@ const KonvaPage = () => {
           {isEditing ? "Stop Editing" : "Start Editing"}
         </button>
       )}
-      <h1>{flattenedPoints}</h1>
       <Stage
         width={window.innerWidth}
         height={window.innerHeight}
