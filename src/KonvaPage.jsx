@@ -60,11 +60,7 @@ const KonvaPage = () => {
   const handleDragMovePoint = (event) => {
     const index = event.target.index - 1;
     const position = [event.target.attrs.x, event.target.attrs.y];
-    setPoints((previousPoints) => [
-      ...previousPoints.slice(0, index),
-      position,
-      ...previousPoints.slice(index + 1),
-    ]);
+    updatePointPositionInEditMode(index, position);
   };
 
   const toggleDrawingMode = () => {
@@ -82,6 +78,24 @@ const KonvaPage = () => {
     if (!isEditing && points.length > 0) {
       setFloors((prevFloors) => [...prevFloors, points]);
     }
+  };
+
+  const updatePointPositionInEditMode = (index, position) => {
+    setPoints((previousPoints) => [
+      ...previousPoints.slice(0, index),
+      position,
+      ...previousPoints.slice(index + 1),
+    ]);
+
+    setFloors((previousFloors) =>
+      previousFloors.map((floor, floorIndex) =>
+        floorIndex === 0
+          ? floor.map((point, pointIndex) =>
+              pointIndex === index ? position : point
+            )
+          : floor
+      )
+    );
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
