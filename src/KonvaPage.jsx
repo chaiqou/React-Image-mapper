@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Stage, Layer, Rect, Line, Image, Group } from "react-konva";
 
 const KonvaPage = () => {
@@ -18,7 +18,7 @@ const KonvaPage = () => {
 
   useEffect(() => {
     image.imageObj.src = image.imageUrl;
-  }, []);
+  }, [image.imageObj, image.imageUrl]);
 
   const getMousePosition = () => {
     return [
