@@ -30,6 +30,10 @@ const KonvaPage = () => {
   const handleClick = () => {
     const mousePos = getMousePosition();
 
+    if (isEditing) {
+      return;
+    }
+
     if (isMouseOverStartPoint && points.length >= 3) {
       setIsFinished(true);
     } else if (isDrawing) {
@@ -74,6 +78,11 @@ const KonvaPage = () => {
 
   const toggleEditingMode = () => {
     setIsEditing(!isEditing);
+
+    if (isEditing) {
+      setPoints([]);
+    }
+
     if (points.length > 0) {
       setFloors([points]);
     }
