@@ -1,8 +1,3 @@
-# React + Vite
+In this repository, we generate overlays for buildings, including floors and flats, as well as floor plans. We have implemented this functionality using various packages and also with vanilla JavaScript. Let's render the component we want to see in main.jsx.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+our choice is Konva.js.
