@@ -3,16 +3,18 @@ import { Stage, Layer, Rect, Line, Image, Group } from "react-konva";
 
 const KonvaPage = () => {
   const [points, setPoints] = useState([]);
-  const [cursorMousePosition, setCursorMousePosition] = useState([0, 0]);
-  const [isMouseOverStartPoint, setIsMouseOverStartPoint] = useState(false);
-  const [isFinished, setIsFinished] = useState(false);
+  const [shapes, setShapes] = useState([]);
   const [image] = useState({
     imageObj: new window.Image(),
     imageUrl: "../src/assets/apartment.png",
   });
+
+  const [cursorMousePosition, setCursorMousePosition] = useState([0, 0]);
+  const [isMouseOverStartPoint, setIsMouseOverStartPoint] = useState(false);
+
+  const [isFinished, setIsFinished] = useState(false);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
-  const [floors, setFloors] = useState([]);
 
   const stageRef = useRef();
 
@@ -67,7 +69,7 @@ const KonvaPage = () => {
     setIsDrawing(!isDrawing);
     setIsEditing(false);
     if (points.length > 0) {
-      setFloors([...floors, points]);
+      setShapes([...shapes, points]);
     }
     setPoints([]);
   };
@@ -149,7 +151,7 @@ const KonvaPage = () => {
                 />
               );
             })}
-            {floors.map((floorPoints, index) => (
+            {shapes.map((floorPoints, index) => (
               <Line
                 key={`floor-${index}`}
                 points={floorPoints.reduce((a, b) => a.concat(b), [])}
