@@ -82,16 +82,6 @@ const KonvaPage = () => {
       position,
       ...previousPoints.slice(index + 1),
     ]);
-
-    // setFloors((previousFloors) =>
-    //   previousFloors.map((floor, floorIndex) =>
-    //     floorIndex === 0
-    //       ? floor.map((point, pointIndex) =>
-    //           pointIndex === index ? position : point
-    //         )
-    //       : floor
-    //   )
-    // );
   };
 
   // [ [a, b], [c, d], ... ] to [ a, b, c, d, ...]
