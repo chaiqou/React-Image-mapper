@@ -30,7 +30,7 @@ const KonvaPage = () => {
   };
 
   const handleClick = () => {
-    const mousePos = getMousePosition();
+    const mousePosition = getMousePosition();
 
     if (isEditing) {
       return;
@@ -39,7 +39,7 @@ const KonvaPage = () => {
     if (isMouseOverStartPoint && points.length >= 3) {
       setIsFinished(true);
     } else if (isDrawing) {
-      setPoints([...points, mousePos]);
+      setPoints([...points, mousePosition]);
     }
   };
 
