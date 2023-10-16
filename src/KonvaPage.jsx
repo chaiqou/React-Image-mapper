@@ -49,7 +49,7 @@ const KonvaPage = () => {
   };
 
   const handleMouseOverStartPoint = (event) => {
-    if (isFinished || points.length < 3) return;
+    if (isFinished || points.length < 30) return;
     event.target.scale({ x: 2, y: 2 });
     setIsMouseOverStartPoint(true);
   };
