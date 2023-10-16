@@ -16,11 +16,27 @@ const KonvaPage = () => {
   const [isDrawing, setIsDrawing] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
+  const [stageWidth, setStageWidth] = useState(window.innerWidth);
+  const [stageHeight, setStageHeight] = useState(window.innerHeight);
+
   const stageRef = useRef();
 
   useEffect(() => {
     image.imageObj.src = image.imageUrl;
   }, [image.imageObj, image.imageUrl]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setStageWidth(window.innerWidth);
+      setStageHeight(window.innerHeight);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const getMousePosition = () => {
     return [
@@ -102,8 +118,8 @@ const KonvaPage = () => {
         </button>
       )}
       <Stage
-        width={window.innerWidth}
-        height={window.innerHeight}
+        width={stageWidth}
+        height={stageHeight}
         onMouseDown={handleClick}
         onMouseMove={handleMouseMove}
         ref={stageRef}
@@ -112,8 +128,8 @@ const KonvaPage = () => {
         <Layer>
           <Image
             image={image.imageObj}
-            width={window.innerWidth}
-            height={window.innerHeight}
+            width={stageWidth}
+            height={stageHeight}
           />
           <Group>
             <Line
